@@ -2,7 +2,7 @@
 
 # https://github.com/gnab/remark/wiki
 
-with open("lessons.html", "w") as f:
+with open("slides.html", "w") as f:
     f.write(\
 """
 <!DOCTYPE html>
