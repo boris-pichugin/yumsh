@@ -121,7 +121,35 @@ secret = random.randint(1,99)
 x ≡ 10 (mod 13)
 ```
 
-### 06. Решение диофантового уравнения a * x + b * y = c
+### 06. Вычисление числа pi
+
+1. Используя формулу для суммы ряда Эйлера:
+
+![](http://mathurl.com/render.cgi?1+\frac{1}{2^2}+\frac{1}{3^2}+\cdots=\sum_{k=1}^\infty\frac{1}{k^2}=\frac{\pi^2}{6})
+
+2. Используя формулу для суммы ряда Лейбница:
+
+![](http://mathurl.com/render.cgi?1-\frac{1}{3}+\frac{1}{5}-\frac{1}{7}+\cdots=\sum_{k=0}^\infty\frac{(-1)^k}{2k+1}=\frac{\pi}{4})
+
+3. Используя формулу для произведения Валлиса:
+
+![](http://mathurl.com/render.cgi?\frac{2^2}{1\cdot3}\cdot\frac{4^2}{3\cdot5}\cdot\frac{6^2}{5\cdot7}\cdots=\prod_{k=1}^\infty\frac{(2k)^2}{(2k-1)(2k+1)}=\frac{\pi}{2})
+
+4. Используя формулу для произведения Виета:
+
+![](http://mathurl.com/render.cgi?\frac{2}{\sqrt{2}}\cdot\frac{2}{\sqrt{2+\sqrt{2}}}\cdot\frac{2}{\sqrt{2+\sqrt{2+\sqrt{2}}}}\cdot\frac{2}{\sqrt{2+\sqrt{2+\sqrt{2+\sqrt{2}}}}}\cdots=\frac{\pi}{2})
+
+5. Используя телескопическую формулу Броункера:
+
+![](http://mathurl.com/render.cgi?2+\cfrac{1^2}{2+\cfrac{3^2}{2+\cfrac{5^2}{2+\cfrac{7^2}{2+\cdots}}}}=1+\frac{4}{\pi})
+
+Чтобы обрезать формулу на шаге с номером *n* надо последнюю дробь вида
+
+![](http://mathurl.com/render.cgi?2+\cfrac{(2n+1)^2}{2+\cdots})
+
+Заменить на ![](http://mathurl.com/render.cgi?2n+1).
+
+### 07. Решение диофантового уравнения a * x + b * y = c
 
 Спросить у пользователя целые числа `a`, `b` и `c`. Вывести решение уравнения `a * x + b * y = c`.
 
