@@ -1,5 +1,18 @@
 import math
 
+def main():
+    print("Вычисление числа pi.")
+
+    n = 10000000
+    a = compute_euler_pi(n)
+    print(f"Сумма Эйлера для n = {n} равна:\n   {a}, {a - math.pi}.")
+
+    a = compute_leibniz_pi(n)
+    print(f"Сумма Лейбница для n = {n} равна:\n   {a}, {a - math.pi}.")
+
+    a = compute_willis_pi(n)
+    print(f"Произведение Виллиса для n = {n} равна:\n   {a}, {a - math.pi}.")
+
 def compute_euler_pi(n:int) -> float:
     """
     Вычисление pi из суммы Эйлера.
@@ -40,15 +53,4 @@ def compute_willis_pi(n:int) -> float:
         p *= k2 / (k2 - 1)
     return p * 2
 
-
-print("Вычисление сумм и произведений.")
-
-n = 10000000
-a = compute_euler_pi(n)
-print(f"pi по Эйлеру для n = {n} равно:\n   {a}, {a - math.pi}.")
-
-a = compute_leibniz_pi(n)
-print(f"pi Лейбница для n = {n} равно:\n   {a}, {a - math.pi}.")
-
-a = compute_willis_pi(n)
-print(f"pi по Виллису для n = {n} равно:\n   {a}, {a - math.pi}.")
+main()
