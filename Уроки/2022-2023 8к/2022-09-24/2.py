@@ -16,8 +16,8 @@ def str_to_float(a: str, q: int) -> float:
     if mantissa <= 0:
         return result
     else:
-        return result / (q**mantissa)
-    
+        return result / (q ** mantissa)
+
 
 def char_to_digit(ch: str) -> int:
     if '0' <= ch <= '9':
@@ -26,7 +26,8 @@ def char_to_digit(ch: str) -> int:
         return ord(ch) - ord('A') + 10
     if 'a' <= ch <= 'z':
         return ord(ch) - ord('a') + 10
-    raise Exception(f"Символ '{ch}' не является цифрой")
+    raise Exception(f"Символ '{ch}' не является цифрой.")
+
 
 print(str_to_float('123.11', 10))
 print(str_to_float('1021.11', 3))

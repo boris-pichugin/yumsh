@@ -1,6 +1,7 @@
 DIGITS = list('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
-def print_in_base(a:int, q:int) -> str:
+
+def print_in_base(a: int, q: int) -> str:
     if q <= 1 or len(DIGITS) < q:
         raise Exception(f"Основание системы счисления должно лежать в отрезке [2;{len(DIGITS)}].")
 
@@ -21,7 +22,9 @@ def print_in_base(a:int, q:int) -> str:
         result = result + DIGITS[d]
         a -= d * qn
         qn //= q
-    
+
     return result
 
-print(print_in_base(557, 333))
+
+print(print_in_base(2201, 12))
+print(print_in_base(1102, 11))
