@@ -28,8 +28,10 @@ class Bug:
         """
         self.steps[0] += 1
         self.steps[1] += 1
+
         self.position[0] += self.v[0]
         self.position[1] += self.v[1]
+
         if self.position[0] < 0:
             self.position[0] = -self.position[0]
             self.v[0] = -self.v[0]
@@ -55,6 +57,19 @@ class Bug:
             self.target = (self.target + 1) % len(self.steps)
             self.v[0] = -self.v[0]
             self.v[1] = -self.v[1]
+
+    def shout_steps(self, hearing_radius: float) -> list:
+        """
+        Попросить букашку выкрикнуть свои счётчики,
+        увеличенные на радиус слышимости.
+
+        :param hearing_radius: радиус слышимости для букашек.
+        :return: счётчики.
+        """
+        return [
+            self.steps[0] + hearing_radius,
+            self.steps[1] + hearing_radius
+        ]
 
     def on_hear_signal(self, source: list, steps: list) -> None:
         """

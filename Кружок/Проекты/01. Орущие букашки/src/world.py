@@ -9,16 +9,16 @@ class World:
     """
 
     def __init__(
-        self,
-        width: int,
-        height: int,
-        a_center: list,
-        a_radius: float,
-        b_center: list,
-        b_radius: float,
-        num_bugs: int,
-        hearing_radius: float,
-        bug_rate: float
+            self,
+            width: int,
+            height: int,
+            a_center: list,
+            a_radius: float,
+            b_center: list,
+            b_radius: float,
+            num_bugs: int,
+            hearing_radius: float,
+            bug_rate: float
     ) -> None:
         """
         Создать Мир.
@@ -57,7 +57,7 @@ class World:
         return Bug(
             target=random.randint(0, 1),
             position=[random.random() * width, random.random() * height],
-            v=self.generate_v(bug_rate)
+            v=self.generate_v(bug_rate*(0.5 + random.random()))
         )
 
     def generate_v(self, bug_rate: float) -> list:
@@ -83,10 +83,14 @@ class World:
             if self.is_bug_in_point(bug, self.b_center, self.b_radius):
                 bug.on_get_into(1)
 
-        for b0 in self.bugs:
-            for b1 in self.bugs:
-                if (b0 != b1 and self.is_interact(b0, b1)):
-                    pass
+        num_bugs = len(self.bugs)
+        for i in range(1, num_bugs):
+            bug0 = self.bugs[i]
+            for j in range(i):
+                bug1 = self.bugs[j]
+                if self.is_interact(bug0, bug1):
+                    bug0.on_hear_signal(bug1.position, bug1.shout_steps(self.hearing_radius))
+                    bug1.on_hear_signal(bug0.position, bug0.shout_steps(self.hearing_radius))
 
     def is_bug_in_point(self, bug: Bug, center: list, radius: float) -> bool:
         """
@@ -110,7 +114,7 @@ class World:
     def is_interact(self, bug0: Bug, bug1: Bug) -> bool:
         """
         Выяснить слышат ли букашки друг друга.
-        
+
         :param bug0: первая букашка.
         :param bug1: вторая букашка.
         :return: true, если расстояние между букашками меньше self.hearing_radius.
