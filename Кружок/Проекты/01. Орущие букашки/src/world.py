@@ -1,6 +1,9 @@
-import random
 import math
+import random
+from typing import List, Optional
+
 from bug import Bug
+from target import Target
 
 
 class World:
@@ -9,36 +12,27 @@ class World:
     """
 
     def __init__(
-            self,
-            width: int,
-            height: int,
-            a_center: list,
-            a_radius: float,
-            b_center: list,
-            b_radius: float,
-            num_bugs: int,
-            hearing_radius: float,
-            bug_rate: float
+        self,
+        width: int,
+        height: int,
+        targets: List[Target],
+        num_bugs: int,
+        hearing_radius: float,
+        bug_rate: float
     ) -> None:
         """
         Создать Мир.
 
         :param width: ширина Мира.
         :param height: высота Мира.
-        :param a_center: координаты центра пункта A: список из двух чисел.
-        :param a_radius: радиус пункта A.
-        :param b_center: координаты центра пункта B: список из двух чисел.
-        :param b_radius: радиус пункта B.
+        :param targets: список целей.
         :param num_bugs: число букашек в Мире (букашки создаются случайно).
         :param hearing_radius: радиус слышимости для букашек.
         :param bug_rate: расстояние, которое букашка проходит за один шаг.
         """
         self.width = width
         self.height = height
-        self.a_center = a_center
-        self.a_radius = a_radius
-        self.b_center = b_center
-        self.b_radius = b_radius
+        self.targets = targets
         self.bugs = [
             self.generate_bug(width, height, bug_rate)
             for _ in range(num_bugs)
@@ -57,7 +51,7 @@ class World:
         return Bug(
             target=random.randint(0, 1),
             position=[random.random() * width, random.random() * height],
-            v=self.generate_v(bug_rate*(0.5 + random.random()))
+            v=self.generate_v(bug_rate * (0.5 + random.random()))
         )
 
     def generate_v(self, bug_rate: float) -> list:
@@ -78,10 +72,9 @@ class World:
         """
         for bug in self.bugs:
             bug.step(self.width, self.height)
-            if self.is_bug_in_point(bug, self.a_center, self.a_radius):
-                bug.on_get_into(0)
-            if self.is_bug_in_point(bug, self.b_center, self.b_radius):
-                bug.on_get_into(1)
+            target = self.select_target(bug.position)
+            if target is not None:
+                bug.on_get_into(target.mark)
 
         num_bugs = len(self.bugs)
         for i in range(1, num_bugs):
@@ -92,16 +85,17 @@ class World:
                     bug0.on_hear_signal(bug1.position, bug1.shout_steps(self.hearing_radius))
                     bug1.on_hear_signal(bug0.position, bug0.shout_steps(self.hearing_radius))
 
-    def is_bug_in_point(self, bug: Bug, center: list, radius: float) -> bool:
+    def select_target(self, position: list) -> Optional[Target]:
         """
-        Проверить, достигла ли букашка цели.
+        Выбрать цель, в которую попадает данная точка.
 
-        :param bug: букашка.
-        :param center: центр цели.
-        :param radius: радиус цели.
-        :return: true, если букашка достигла цели.
+        :param position: координаты точки.
+        :return: цель, в которую попала точка, или None, если точка не попала ни в одну цель.
         """
-        return self.distance(bug.position, center) < radius
+        for target in self.targets:
+            if self.distance(position, target.center) < target.radius:
+                return target
+        return None
 
     def distance(self, p1: list, p2: list) -> float:
         """

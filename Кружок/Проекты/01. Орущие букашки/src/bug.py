@@ -1,3 +1,7 @@
+import math
+import random
+
+
 class Bug:
     """
     Букашка - элемент роевого интеллекта.
@@ -29,8 +33,9 @@ class Bug:
         self.steps[0] += 1
         self.steps[1] += 1
 
-        self.position[0] += self.v[0]
-        self.position[1] += self.v[1]
+        offset = self.generate_offset(1)
+        self.position[0] += self.v[0] + offset[0]
+        self.position[1] += self.v[1] + offset[1]
 
         if self.position[0] < 0:
             self.position[0] = -self.position[0]
@@ -67,8 +72,8 @@ class Bug:
         :return: счётчики.
         """
         return [
-            self.steps[0] + hearing_radius,
-            self.steps[1] + hearing_radius
+            self.steps[0] + int(hearing_radius / self.rate),
+            self.steps[1] + int(hearing_radius / self.rate)
         ]
 
     def on_hear_signal(self, source: list, steps: list) -> None:
@@ -94,8 +99,14 @@ class Bug:
 
         :param source: координаты источника.
         """
-        self.v[0] = source[0] - self.position[0]
-        self.v[1] = source[1] - self.position[1]
+        offset = self.generate_offset(3)
+        self.v[0] = source[0] + offset[0] - self.position[0]
+        self.v[1] = source[1] + offset[1] - self.position[1]
         distance = (self.v[0] ** 2 + self.v[1] ** 2) ** 0.5
         self.v[0] = self.v[0] * self.rate / distance
         self.v[1] = self.v[1] * self.rate / distance
+
+    def generate_offset(self, max_r: float) -> list:
+        phi = random.uniform(0, 2 * math.pi)
+        r = random.uniform(0, max_r)
+        return [r * math.cos(phi), r * math.sin(phi)]
