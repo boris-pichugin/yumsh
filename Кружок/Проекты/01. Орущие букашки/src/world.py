@@ -33,23 +33,26 @@ class World:
         self.width = width
         self.height = height
         self.targets = targets
+        num_marks = 1 + max(target.mark for target in targets)
         self.bugs = [
-            self.generate_bug(width, height, bug_rate)
+            self.generate_bug(num_marks, width, height, bug_rate)
             for _ in range(num_bugs)
         ]
         self.hearing_radius = hearing_radius
 
-    def generate_bug(self, width: int, height: int, bug_rate: float) -> Bug:
+    def generate_bug(self, num_marks: int, width: int, height: int, bug_rate: float) -> Bug:
         """
         Создать новую случайную букашку.
 
+        :param num_marks: число различных типов целей.
         :param width: ширина Мира.
         :param height: высота Мира.
         :param bug_rate: расстояние, которое букашка проходит за один шаг.
         :return: новая случайная букашка.
         """
         return Bug(
-            target=random.randint(0, 1),
+            num_marks=num_marks,
+            target=random.randint(0, num_marks - 1),
             position=[random.random() * width, random.random() * height],
             v=self.generate_v(bug_rate * (0.5 + random.random()))
         )

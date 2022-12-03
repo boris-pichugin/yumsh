@@ -10,9 +10,9 @@ world = World(
     height=800,
     targets=[
         Target(center=[80, 80], radius=50, mark=0),
-        Target(center=[820, 80], radius=75, mark=0),
-        Target(center=[710, 550], radius=40, mark=1),
-        Target(center=[80, 550], radius=30, mark=1)
+        Target(center=[820, 80], radius=75, mark=1),
+        Target(center=[710, 550], radius=40, mark=2),
+        Target(center=[80, 550], radius=30, mark=3)
     ],
     num_bugs=200,
     hearing_radius=50,
@@ -23,7 +23,9 @@ selected_target: Optional[Target] = None
 
 MARK_COLORS = [
     (200, 100, 0),
-    (0, 200, 100)
+    (0, 200, 100),
+    (0, 100, 200),
+    (100, 100, 100)
 ]
 
 
