@@ -1,3 +1,4 @@
+import time
 from typing import Optional
 
 import pygame as pg
@@ -14,7 +15,7 @@ world = World(
         Target(center=[710, 550], radius=40, mark=2),
         Target(center=[80, 550], radius=30, mark=3)
     ],
-    num_bugs=200,
+    num_bugs=500,
     hearing_radius=50,
     bug_rate=2
 )
@@ -75,13 +76,30 @@ def main():
     exit()
 
 
+tics_count = 0  # число тиков мира.
+sum_times = 0  # суммарное время, потраченное на вычисление шагов (ns)
+
+
+#  24298214.73746814
+# 110246605.2278481
+
 def draw(surface: pg.Surface) -> None:
     """
     Функция рисования.
 
     :param surface:  поверхность, на которой надо рисовать.
     """
+    global tics_count
+    global sum_times
+
+    sum_times -= time.time_ns()
+
     world.tick()
+
+    tics_count += 1
+    sum_times += time.time_ns()
+    if tics_count % 20 == 0:
+        print(f"Среднее время на вычисление одного шага: {sum_times / tics_count:.2f} ns")
 
     surface.fill((255, 255, 255))  # Заполняем фон кадра чёрным цветом.
 

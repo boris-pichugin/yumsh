@@ -79,11 +79,35 @@ class World:
             if target is not None:
                 bug.on_get_into(target.mark)
 
-        num_bugs = len(self.bugs)
+        grid_w = math.floor(self.width / self.hearing_radius)
+        grid_h = math.floor(self.height / self.hearing_radius)
+        grid = [[[] for _ in range(grid_h)] for _ in range(grid_w)]
+        for bug in self.bugs:
+            w = int(bug.position[0] // self.hearing_radius)
+            h = int(bug.position[1] // self.hearing_radius)
+            grid[w][h].append(bug)
+
+        for w in range(grid_w - 1):
+            for h in range(grid_h - 1):
+                bugs00 = grid[w][h]
+                self.interact_bugs_in_one_cell(bugs00)
+                self.interact_bugs_in_different_cells(bugs00, grid[w][h + 1])
+                self.interact_bugs_in_different_cells(bugs00, grid[w + 1][h])
+                self.interact_bugs_in_different_cells(bugs00, grid[w + 1][h + 1])
+
+    def interact_bugs_in_one_cell(self, bugs: list):
+        num_bugs = len(bugs)
         for i in range(1, num_bugs):
-            bug0 = self.bugs[i]
+            bug0 = bugs[i]
             for j in range(i):
-                bug1 = self.bugs[j]
+                bug1 = bugs[j]
+                if self.is_interact(bug0, bug1):
+                    bug0.on_hear_signal(bug1.position, bug1.shout_steps(self.hearing_radius))
+                    bug1.on_hear_signal(bug0.position, bug0.shout_steps(self.hearing_radius))
+
+    def interact_bugs_in_different_cells(self, bugs0: list, bugs1: list):
+        for bug0 in bugs0:
+            for bug1 in bugs1:
                 if self.is_interact(bug0, bug1):
                     bug0.on_hear_signal(bug1.position, bug1.shout_steps(self.hearing_radius))
                     bug1.on_hear_signal(bug0.position, bug0.shout_steps(self.hearing_radius))
