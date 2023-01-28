@@ -2,12 +2,21 @@ from typing import Optional
 
 
 class Block:
+    """
+    Элемент поверхности модели.
+    """
+
     def __init__(self) -> None:
         self.m = 1.0
         self.h = 0.0
         self.v = 0.0
 
     def step(self, dt: float) -> None:
+        """
+        Переместить блок за время dt.
+        """
+        if self.m <= 0:
+            return
         self.h += self.v * dt
 
     def update(
@@ -19,6 +28,9 @@ class Block:
             b2: Optional["Block"],
             b3: Optional["Block"]
     ):
+        if self.m <= 0:
+            return
+
         force = 0.0
 
         if b0 is not None:

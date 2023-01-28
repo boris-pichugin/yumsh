@@ -5,7 +5,7 @@ import pygame as pg
 from model import Model
 
 SW = 800
-SH = 600
+SH = 800
 
 MIN_H = -10.0
 MAX_H = 10.0
@@ -13,8 +13,9 @@ MAX_H = 10.0
 MIN_COLOR = (100, 100, 255)
 MAX_COLOR = (255, 100, 100)
 
-MW = SW // 8
-MH = SH // 8
+BLOCK_SIZE = 16
+MW = SW // BLOCK_SIZE
+MH = SH // BLOCK_SIZE
 
 model = Model(
     width=MW,
@@ -27,8 +28,18 @@ model = Model(
 
 for mx in range(MW):
     for my in range(MH):
-        r = (mx/MW - 0.5)**2 + (my/MH - 0.5)**2
-        model.block(mx, my).h = MAX_H * math.exp(-r*100)
+        r = ((mx+0.5)/MW - 0.5)**2 + ((my+0.5)/MH - 0.5)**2
+        block = model.block(mx, my)
+        block.h = MAX_H * math.exp(-r * 100)
+
+for mx in range(MW):
+    model.block(mx, 0).m = 0
+    model.block(mx, MW - 1).m = 0
+
+for my in range(MH):
+    model.block(0, my).m = 0
+    model.block(MH - 1, my).m = 0
+
 
 
 def main():
@@ -62,20 +73,16 @@ def main():
 
 def draw(surface: pg.Surface) -> None:
     model.run_to(pg.time.get_ticks() / 2000.0)
-    for sx in range(SW):
-        for sy in range(SH):
-            color = get_color(sx, sy)
-            surface.set_at((sx, sy), color)
+    for mx in range(MW):
+        for my in range(MH):
+            color = get_color(mx, my)
+            pg.draw.rect(surface, color, [mx*BLOCK_SIZE, my*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE])
 
 
-def get_color(sx: int, sy: int) -> tuple[int, int, int]:
-    mx = sx * model.width() // SW
-    my = sy * model.height() // SH
-
+def get_color(mx, my):
     block = model.block(mx, my)
     if block is None:
         return 0, 0, 0
-
     h = block.h
     if h < 0:
         x = (max(h, MIN_H) / MIN_H) ** 0.3

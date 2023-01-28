@@ -19,6 +19,14 @@ class Model:
         return self._height
 
     def block(self, mx: int, my: int) -> Optional[Block]:
+        #  Поверхность на торе.
+        # mx = mx % (2 * self._width)
+        # my = my % (2 * self._height)
+        # mx = min(mx, 2 * self._width - mx - 1)
+        # my = min(my, 2 * self._height - my - 1)
+        # return self._blocks[mx * self._height + my]
+
+        # Поверхность со свободным краем.
         if mx < 0 or self._width <= mx:
             return None
         if my < 0 or self._height <= my:
@@ -26,7 +34,6 @@ class Model:
         return self._blocks[mx * self._height + my]
 
     def run_to(self, t: float):
-        print(f"run_to({t})")
         while self._time < t:
             for mx in range(self._width):
                 for my in range(self._height):
