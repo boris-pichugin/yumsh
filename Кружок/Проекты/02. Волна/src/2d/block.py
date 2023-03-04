@@ -10,6 +10,7 @@ class Block:
         self.m = 1.0
         self.h = 0.0
         self.v = 0.0
+        self.e = 0.0
 
     def step(self, dt: float) -> None:
         """
@@ -18,6 +19,8 @@ class Block:
         if self.m <= 0:
             return
         self.h += self.v * dt
+        e0 = self.v ** 2 / 2
+        self.e = 0.01 * e0 + 0.99 * self.e
 
     def update(
             self,
@@ -44,4 +47,3 @@ class Block:
 
         acceleration = force / self.m
         self.v += acceleration * dt
-

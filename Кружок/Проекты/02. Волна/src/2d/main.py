@@ -1,5 +1,3 @@
-import math
-
 import pygame as pg
 
 from model import Model
@@ -24,22 +22,12 @@ model = Model(
     dt=0.1
 )
 
-# model.block(MW//2, MH//2).h = 10
-
-for mx in range(MW):
-    for my in range(MH):
-        r = ((mx+0.5)/MW - 0.5)**2 + ((my+0.5)/MH - 0.5)**2
-        block = model.block(mx, my)
-        block.h = MAX_H * math.exp(-r * 100)
-
-for mx in range(MW):
-    model.block(mx, 0).m = 0
-    model.block(mx, MW - 1).m = 0
+holes = {MH // 2 - 5, MH // 2 + 5}
 
 for my in range(MH):
-    model.block(0, my).m = 0
-    model.block(MH - 1, my).m = 0
-
+    if my not in holes:
+        model.block(MW // 4, my).m = 0
+    model.block(MW // 8, my).h = MAX_H
 
 
 def main():
@@ -76,14 +64,14 @@ def draw(surface: pg.Surface) -> None:
     for mx in range(MW):
         for my in range(MH):
             color = get_color(mx, my)
-            pg.draw.rect(surface, color, [mx*BLOCK_SIZE, my*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE])
+            pg.draw.rect(surface, color, [mx * BLOCK_SIZE, my * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE])
 
 
 def get_color(mx, my):
     block = model.block(mx, my)
-    if block is None:
+    if block is None or block.m <= 0:
         return 0, 0, 0
-    h = block.h
+    h = block.e
     if h < 0:
         x = (max(h, MIN_H) / MIN_H) ** 0.3
         return (
