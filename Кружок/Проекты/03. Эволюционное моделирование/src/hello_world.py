@@ -11,7 +11,7 @@ def main() -> None:
             fit += abs(ord(individ[i]) - ord(target[i]))
         return fit
 
-    solution = find_genetic(fitness, len(target), 100, 0.8, 0.5)
+    solution = find_genetic(fitness, len(target), 100, 5, 0.8, 0.2)
     print(f"solution = [{solution}]")
 
 
@@ -19,6 +19,7 @@ def find_genetic(
         fitness: Callable[[str], int],
         individ_len: int,
         population_size: int,
+        elite_size: int,
         crossover_rate: float,
         mutation_rate: float
 ) -> str:
@@ -26,13 +27,14 @@ def find_genetic(
     iteration = 0
     while True:
         iteration += 1
-        population, best = selection(fitness, population)
+        selected, best, elite = selection(fitness, population, elite_size)
         best_fitness = fitness(best)
         print(f"{iteration:03d} [{best}] ({best_fitness})")
         if best_fitness == 0:
             return best
-        population = crossover(population, population_size, crossover_rate)
-        population = mutation(population, mutation_rate)
+        children = crossover(selected, population_size - elite_size, crossover_rate)
+        mutated_children = mutation(children, mutation_rate)
+        population = elite + mutated_children
 
 
 def generate_init_population(len: int, population_size: int) -> List[str]:
@@ -47,12 +49,16 @@ def random_char() -> str:
     return chr(random.randrange(32, 127))
 
 
-def selection(fitness: Callable[[str], int], population: List[str]) -> Tuple[List[str], str]:
+def selection(
+        fitness: Callable[[str], int],
+        population: List[str],
+        elite_size: int
+) -> Tuple[List[str], str, List[str]]:
     population.sort(key=fitness)
     best = population[0]
     size = len(population)
     half = size // 2
-    return population[0:half], best
+    return population[0:half], best, population[0:elite_size]
 
 
 def crossover(
