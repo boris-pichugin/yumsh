@@ -11,7 +11,16 @@ def main() -> None:
             fit += abs(ord(individ[i]) - ord(target[i]))
         return fit
 
-    solution = find_genetic(fitness, len(target), 100, 5, 0.8, 0.2)
+    solution = find_genetic(
+        fitness=fitness,
+        individ_len=len(target),
+        population_size=100,
+        selection_size=50,
+        sample_size=10,
+        elite_size=5,
+        crossover_rate=0.8,
+        mutation_rate=0.2
+    )
     print(f"solution = [{solution}]")
 
 
@@ -19,6 +28,8 @@ def find_genetic(
         fitness: Callable[[str], int],
         individ_len: int,
         population_size: int,
+        selection_size: int,
+        sample_size: int,
         elite_size: int,
         crossover_rate: float,
         mutation_rate: float
@@ -27,7 +38,10 @@ def find_genetic(
     iteration = 0
     while True:
         iteration += 1
-        selected, best, elite = selection(fitness, population, elite_size)
+        selected, best, elite = selection_tournament(
+            fitness, population, selection_size, sample_size, elite_size
+        )
+        # selected, best, elite = selection_simple_best(fitness, population, elite_size)
         best_fitness = fitness(best)
         print(f"{iteration:03d} [{best}] ({best_fitness})")
         if best_fitness == 0:
@@ -49,16 +63,36 @@ def random_char() -> str:
     return chr(random.randrange(32, 127))
 
 
-def selection(
+def selection_simple_best(
         fitness: Callable[[str], int],
         population: List[str],
+        selection_size: int,
         elite_size: int
 ) -> Tuple[List[str], str, List[str]]:
     population.sort(key=fitness)
     best = population[0]
-    size = len(population)
-    half = size // 2
-    return population[0:half], best, population[0:elite_size]
+    pop_size = len(population)
+    return population[0:min(pop_size, selection_size)], best, population[0:elite_size]
+
+
+def selection_tournament(
+        fitness: Callable[[str], int],
+        population: List[str],
+        selection_size: int,
+        sample_size: int,
+        elite_size: int
+) -> Tuple[List[str], str, List[str]]:
+    population.sort(key=fitness)
+    best = population[0]
+    elite = population[0:elite_size]
+
+    pop_size = len(population)
+    selected = []
+    while len(selected) < selection_size:
+        individ_id = min(random.randrange(0, pop_size) for _ in range(sample_size))
+        selected.append(population[individ_id])
+
+    return selected, best, elite
 
 
 def crossover(
