@@ -1,5 +1,5 @@
 import random
-from typing import List, Tuple, Callable
+from typing import List, Tuple, Callable, Iterator
 
 
 def main() -> None:
@@ -21,7 +21,14 @@ def main() -> None:
         crossover_rate=0.8,
         mutation_rate=0.2
     )
-    print(f"solution = [{solution}]")
+
+    while True:
+        iteration, population, best, best_fitness = next(solution)
+        print(f"{iteration:03d} [{best}] ({best_fitness})")
+        if best_fitness == 0:
+            break
+
+    print(f"solution = [{best}]")
 
 
 def find_genetic(
@@ -33,22 +40,29 @@ def find_genetic(
         elite_size: int,
         crossover_rate: float,
         mutation_rate: float
-) -> str:
+) -> Iterator[Tuple[int, List[str], str, int]]:
     population = generate_init_population(individ_len, population_size)
     iteration = 0
+    best = ""
+    best_fitness = 1
     while True:
-        iteration += 1
-        selected, best, elite = selection_tournament(
-            fitness, population, selection_size, sample_size, elite_size
-        )
-        # selected, best, elite = selection_simple_best(fitness, population, elite_size)
-        best_fitness = fitness(best)
-        print(f"{iteration:03d} [{best}] ({best_fitness})")
-        if best_fitness == 0:
-            return best
-        children = crossover(selected, population_size - elite_size, crossover_rate)
-        mutated_children = mutation(children, mutation_rate)
-        population = elite + mutated_children
+        if best_fitness > 0:
+            iteration += 1
+            selected, best, elite = selection_tournament(
+                fitness,
+                population,
+                selection_size,
+                sample_size,
+                elite_size
+            )
+            # selected, best, elite = selection_simple_best(fitness, population, elite_size)
+            best_fitness = fitness(best)
+            if best_fitness > 0:
+                children = crossover(selected, population_size - elite_size, crossover_rate)
+                mutated_children = mutation(children, mutation_rate)
+                population = elite + mutated_children
+
+        yield iteration, population, best, best_fitness
 
 
 def generate_init_population(len: int, population_size: int) -> List[str]:
@@ -128,4 +142,5 @@ def mutation(
     return population
 
 
-main()
+if __name__ == '__main__':
+    main()
