@@ -22,13 +22,10 @@ def main() -> None:
         mutation_rate=0.2
     )
 
-    while True:
-        iteration, population, best, best_fitness = next(solution)
+    for (iteration, population, best, best_fitness) in solution:
         print(f"{iteration:03d} [{best}] ({best_fitness})")
         if best_fitness == 0:
             break
-
-    print(f"solution = [{best}]")
 
 
 def find_genetic(
@@ -44,7 +41,7 @@ def find_genetic(
     population = generate_init_population(individ_len, population_size)
     iteration = 0
     best = ""
-    best_fitness = 1
+    best_fitness = 10000
     while True:
         if best_fitness > 0:
             iteration += 1
@@ -110,36 +107,36 @@ def selection_tournament(
 
 
 def crossover(
-        population: List[str],
-        population_size: int,
+        selected: List[str],
+        size: int,
         crossover_rate: float
 ) -> List[str]:
-    next_population = []
-    selected_size = len(population)
-    while len(next_population) < population_size:
-        parent0 = population[random.randrange(0, selected_size)]
-        parent1 = population[random.randrange(0, selected_size)]
+    children = []
+    selected_size = len(selected)
+    while len(children) < size:
+        parent0 = selected[random.randrange(0, selected_size)]
+        parent1 = selected[random.randrange(0, selected_size)]
         if 2 <= len(parent0) and random.random() < crossover_rate:
             pos = random.randrange(0, len(parent0) - 1)
-            next_population.append(parent0[:pos] + parent1[pos:])
-            next_population.append(parent1[:pos] + parent0[pos:])
+            children.append(parent0[:pos] + parent1[pos:])
+            children.append(parent1[:pos] + parent0[pos:])
         else:
-            next_population.append(parent0)
-            next_population.append(parent1)
-    return next_population
+            children.append(parent0)
+            children.append(parent1)
+    return children
 
 
 def mutation(
-        population: List[str],
+        children: List[str],
         mutation_rate: float
 ) -> List[str]:
-    for i in range(len(population)):
+    for i in range(len(children)):
         if random.random() < mutation_rate:
-            individ = population[i]
+            individ = children[i]
             pos = random.randrange(0, len(individ))
             individ = individ[:pos] + random_char() + individ[pos + 1:]
-            population[i] = individ
-    return population
+            children[i] = individ
+    return children
 
 
 if __name__ == '__main__':
