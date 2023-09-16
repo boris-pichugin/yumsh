@@ -5,6 +5,7 @@
 - [Литература](#литература)
 - [Математическая логика](#математическая-логика)
   - [2023-09-02 Алгебра высказываний](#2023-09-02-алгебра-высказываний)
+  - [2023-09-09 Преобразование выражений](#2023-09-09-преобразование-выражений)
 
 ## Литература
 
@@ -156,3 +157,109 @@ $$P(x_1, x_2, \dots, x_n)$$
    2. $((A\lor \lnot B)\to B)\land(\lnot A\lor B)$;
    3. $\lnot(A\land B)\leftrightarrow(\lnot A\lor B)$;
    4. $\lnot((A\to B)\leftrightarrow(\lnot B\to \lnot A))$.
+
+### 2023-09-09 Преобразование выражений
+
+#### Основные формулы
+
+- Аксиомы:
+  - $\lnot(\lnot x) \equiv \lnot \lnot x \equiv x$,
+  - $\lnot 0 \equiv 1$,
+  - $x \land 1 \equiv 1 \land x \equiv x$,
+  - $x \land 0 \equiv 0 \land x \equiv 0$,
+  - $x \lor 1 \equiv 1 \lor x \equiv 1$,
+  - $x \lor 0 \equiv 0 \lor x \equiv x$;
+- Идемпотентность:
+  - $x\land x \equiv x$,
+  - $x\lor x \equiv x$;
+- Коммутативность:
+  - $x\land y \equiv y\land x$,
+  - $x\lor y \equiv y\lor x$,
+  - $x\leftrightarrow y \equiv y\leftrightarrow x$,
+  - $x\oplus y \equiv y\oplus x$;
+- Ассоциативность:
+  - $(x\land y) \land z \equiv x\land (y \land z) \equiv x\land y \land z$,
+  - $(x\lor y) \lor z \equiv x\lor (y \lor z) \equiv x\lor y \lor z$,
+  - $(x\leftrightarrow y) \leftrightarrow z \equiv x\leftrightarrow (y \leftrightarrow z) \equiv x\leftrightarrow y \leftrightarrow z$,
+  - $(x\oplus y) \oplus z \equiv x\oplus (y \oplus z) \equiv x\oplus y \oplus z$;
+- Дистрибутивность:
+  - $(x\land y) \lor z \equiv (x\lor z) \land (y\lor z)$,
+  - $(x\lor y) \land z \equiv (x\land z) \lor (y\land z)$;
+- Законы де Моргана:
+  - $\lnot(x\land y) \equiv \lnot x \lor \lnot y$,
+  - $\lnot(x\lor y) \equiv \lnot x \land \lnot y$;
+- Равные аргументы:
+  - $x\land \lnot x \equiv 0$,
+  - $x\lor \lnot x \equiv 1$,
+  - $x\leftrightarrow x \equiv 1$,
+  - $x\leftrightarrow \lnot x \equiv 0$,
+  - $x\to x \equiv 1$,
+  - $x\to \lnot x \equiv \lnot x$,
+  - $x\oplus x \equiv 0$,
+  - $x\oplus \lnot x \equiv 1$,
+  - $x\mid x \equiv \lnot x$,
+  - $x\mid \lnot x \equiv 1$,
+  - $x\downarrow x \equiv \lnot x$,
+  - $x\downarrow \lnot x \equiv 0$;
+- Шорткаты:
+  - $x\leftrightarrow y \equiv (x\land y) \lor (\lnot x\land \lnot y) \equiv (\lnot x\lor y) \land (x\lor \lnot y)$,
+  - $x\to y \equiv \lnot x \lor y$,
+  - $x\oplus y \equiv \lnot (x \leftrightarrow y)$,
+  - $x\mid y \equiv \lnot (x \land y)$,
+  - $x\downarrow y \equiv \lnot (x \lor y)$,
+  - $x\land (x\lor y) = x$,
+  - $x\lor (x\land y) = x$,
+  - $\lnot x\land (x\lor y) = \lnot x\land y$,
+  - $\lnot x\lor (x\land y) = x\lor y$.
+
+#### Задачи
+
+Упростите:
+
+1. $\lnot ((A\lor B) \to \lnot(B\lor C))$.
+2. $\lnot x \lor \lnot(x\lor y)\lor \lnot(y\land \lnot(x\land y))$.
+3. $\lnot(x\lor y\lor \lnot(x\land y))\land\lnot(y\lor x)$.
+4. $(A\to B)\land (B\to (C\lor\lnot A))\land(\lnot D\to (A\land\lnot C))\land (D\to A)$.
+5. $((C\lor B)\to B)\land(A\land B) \to B$.
+6. $((C\lor B)\to B)\land(A\lor B) \to B$.
+
+7. Верно ли, что $P_1\equiv P_2$, если $P_1 = x\land \lnot y\lor x\land z\lor \lnot y\land z$, а $P_2 = (x\land y \lor y\land z \lor x\land\lnot z)\land(x\land \lnot y\lor \lnot y\land z)$.
+
+8. Кто из учеников $A$, $B$, $C$ и $D$ играет, а кто не  играет в шахматы, если известно следующее:
+   - если $A$ или $B$ играет, то $C$ не играет;
+   - если $B$ не играет, то играют $C$ и $D$;
+   - $C$ играет.
+
+9. Определите, кто из подозреваемых участвовал в преступлении, если известно:
+   - если Иванов не участвовал или Петров участвовал, то Сидоров участвовал;
+   - если Иванов не участвовал, то Сидоров не участвовал.
+
+10. В нарушении правил обмена валюты подозреваются четыре работника банка — $A$, $B$, $C$ и $D$. Известно, что:
+    - Если $A$ нарушил, то и $B$ нарушил правила обмена валюты.
+    - Если $B$ нарушил, то и $C$ нарушил или $A$ не нарушал.
+    - Если $D$ не нарушил, то $A$ нарушил, а $C$ не нарушал.
+    - Если $D$ нарушил, то и $A$ нарушил.
+
+    Кто из подозреваемых нарушил правила обмена валюты?
+
+#### Дизъюнктивная нормальная форма (ДНФ)
+
+**Определение.** **Дизъюнктивная нормальная форма** — это булева формула в виде дизъюнкции конъюнкций литералов, где литерал — это либо переменная, либо переменная с отрицанием, и каждая конъюнкт содержит все переменные ровно по одному разу.
+
+**Пример.** $(x\land y\land \lnot z)\lor (x\land \lnot y\land z)\lor (\lnot x\land \lnot y\land \lnot z)$.
+
+**Теорема.** Любой предикат может быть представлен в виде ДНФ.
+
+**Следствие.** Набор логических операций $\{\lnot, \land, \lor\}$ позволяет записать любой предикат, и в этом смысле является полным.
+
+Кроме того, наборы операций $\{\lnot, \land\}$ и $\{\lnot, \lor\}$ тоже являются полными.
+
+А ещё, набор из одной операции $\{\ \mid\ \}$ тоже полный.
+
+#### Конъюнктивная нормальная форма (КНФ)
+
+**Определение.** **Конъюнктивная нормальная форма** — это булева формула в виде конъюнкции дизъюнкций литералов, где литерал — это либо переменная, либо переменная с отрицанием, и каждый дизъюнкт содержит все переменные ровно по одному разу.
+
+**Пример.** $(x\lor y\lor \lnot z)\land (x\lor \lnot y\lor z)\land (\lnot x\lor \lnot y\lor \lnot z)$.
+
+**Теорема.** Любой предикат может быть представлен в виде КНФ.
