@@ -7,7 +7,7 @@ public class Main {
 
         byte x1 = 5; // 1B -128..127
         short x2 = -8; // 2B -2^15 .. (2^15 - 1)
-        int x3 = 55; // 4B -2^31 .. 2^31
+        int x3 = 56; // 4B -2^31 .. 2^31
         int x4 = Integer.MAX_VALUE;
         long x5 = 333L; // 8B
         long x6 = 0xF333L; // 8B
