@@ -15,6 +15,7 @@ public class Server {
                         () -> handleClientSocket(socket),
                         "MyThread-" + (++i)
                 );
+                thread.setDaemon(true);
                 thread.start();
             }
         } catch (Exception e) {
@@ -23,18 +24,23 @@ public class Server {
     }
 
     private static void handleClientSocket(Socket socket) {
-        try(socket) {
-            Thread.sleep(10000L);
+        try (socket) {
             InputStream in = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(reader);
-            String msg = br.readLine();
-            System.out.println("Сервер получил: " + msg);
-
             OutputStream out = socket.getOutputStream();
             OutputStreamWriter writer = new OutputStreamWriter(out);
-            writer.write(msg + '\n');
-            writer.flush();
+
+            while (true) {
+                String msg = br.readLine();
+                if (msg == null) {
+                    break;
+                }
+                System.out.println("Сервер получил: " + msg);
+
+                writer.write(msg + '\n');
+                writer.flush();
+            }
         } catch (final Exception e) {
             e.printStackTrace(System.err);
         }
