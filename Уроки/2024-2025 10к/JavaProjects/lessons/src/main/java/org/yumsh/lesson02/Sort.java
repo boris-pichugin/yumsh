@@ -69,4 +69,51 @@ public class Sort {
             }
         }
     }
+
+    public static void sortByCount(double[] arr) {
+        int n = arr.length;
+        if (n <= 1) {
+            return;
+        }
+        double[] original = arr.clone();
+        for (int i = 0; i < n; i++) {
+            double x = original[i];
+            int k = 0;
+            for (int j = 0; j < n; j++) {
+                if (original[j] < x || (original[j] == x && j < i)) {
+                    k += 1;
+                }
+            }
+            arr[k] = x;
+        }
+    }
+
+    public static void sortByQuick(double[] arr) {
+        sortByQuick(arr, 0, arr.length);
+    }
+
+    private static void sortByQuick(double[] arr, int l, int r) {
+        if (r <= l + 1) {
+            return;
+        }
+        int m = (l + r) / 2;
+        double pivot = arr[m];
+        int k = l;
+        for (int i = l; i < r; i++) {
+            double vi = arr[i];
+            if (vi < pivot) {
+                arr[i] = arr[k];
+                arr[k] = vi;
+                k += 1;
+            }
+        }
+        if (k == 0) {
+            arr[m] = arr[l];
+            arr[l] = pivot;
+            sortByQuick(arr, l + 1, r);
+        } else {
+            sortByQuick(arr, l, k);
+            sortByQuick(arr, k, r);
+        }
+    }
 }
