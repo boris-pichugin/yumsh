@@ -94,7 +94,7 @@ public class Sort {
         sortByQuick(arr, 0, arr.length);
     }
 
-    private static void sortByQuick(double[] arr, int l, int r) {
+    public static void sortByQuick(double[] arr, int l, int r) {
         if (r <= l + 1) {
             return;
         }
@@ -109,7 +109,7 @@ public class Sort {
                 q += 1;
             }
         }
-        if (q == 0) {
+        if (q == l) {
             arr[m] = arr[l];
             arr[l] = pivot;
             sortByQuick(arr, l + 1, r);
