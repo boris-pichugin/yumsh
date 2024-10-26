@@ -1,5 +1,7 @@
 package org.yumsh.lesson02;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Методы сортировки массивов.
  */
@@ -96,24 +98,24 @@ public class Sort {
         if (r <= l + 1) {
             return;
         }
-        int m = (l + r) / 2;
+        int m = ThreadLocalRandom.current().nextInt(l, r);
         double pivot = arr[m];
-        int k = l;
+        int q = l;
         for (int i = l; i < r; i++) {
             double vi = arr[i];
             if (vi < pivot) {
-                arr[i] = arr[k];
-                arr[k] = vi;
-                k += 1;
+                arr[i] = arr[q];
+                arr[q] = vi;
+                q += 1;
             }
         }
-        if (k == 0) {
+        if (q == 0) {
             arr[m] = arr[l];
             arr[l] = pivot;
             sortByQuick(arr, l + 1, r);
         } else {
-            sortByQuick(arr, l, k);
-            sortByQuick(arr, k, r);
+            sortByQuick(arr, l, q);
+            sortByQuick(arr, q, r);
         }
     }
 }
