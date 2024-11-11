@@ -31,14 +31,19 @@ public class Server {
             OutputStream out = socket.getOutputStream();
             OutputStreamWriter writer = new OutputStreamWriter(out);
 
+            String clientName = br.readLine();
+            if (clientName == null) {
+                return;
+            }
+
             while (true) {
                 String msg = br.readLine();
                 if (msg == null) {
                     break;
                 }
-                System.out.println("Сервер получил: " + msg);
+                System.out.println(clientName + ": " + msg);
 
-                writer.write(msg + '\n');
+                writer.write(clientName + ": " + msg + '\n');
                 writer.flush();
             }
         } catch (final Exception e) {

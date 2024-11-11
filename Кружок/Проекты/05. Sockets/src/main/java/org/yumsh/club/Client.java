@@ -8,6 +8,13 @@ import java.util.Scanner;
 public class Client {
     public static void main(String[] args) throws IOException {
 //        try (Socket socket = new Socket("192.168.1.163", 5333)) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ваше имя: ");
+        String name = scanner.nextLine();
+        if (name.isBlank()) {
+            System.out.print("Ваше имя пусто. Пока!");
+            return;
+        }
         try (Socket socket = new Socket("127.0.0.1", 5333)) {
             OutputStream out = socket.getOutputStream();
             OutputStreamWriter writer = new OutputStreamWriter(out);
@@ -15,7 +22,7 @@ public class Client {
             InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(reader);
 
-            Scanner scanner = new Scanner(System.in);
+            writer.write(name + '\n');
             while (true) {
                 System.out.print("Ваше сообщение: ");
                 String msgToSend = scanner.nextLine();
