@@ -1,4 +1,4 @@
-package org.yumsh.lesson02;
+package org.yumsh.sort;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

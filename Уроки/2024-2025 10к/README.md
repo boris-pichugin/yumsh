@@ -3,6 +3,10 @@
 Преподаватель: Борис Юрьевич Пичугин
 
 - [Литература](#литература)
+- [Настройка рабочего окружения](#настройка-рабочего-окружения)
+  - [Ubuntu/Debian](#ubuntudebian)
+  - [Windows](#windows)
+  - [Далее для всех OS](#далее-для-всех-os)
 - [Алгоритмы сортировки](#алгоритмы-сортировки)
   - [Сортировка выбором — *пройдёно*](#сортировка-выбором--пройдёно)
   - [Сортировка вставкой — *пройдёно*](#сортировка-вставкой--пройдёно)
@@ -27,6 +31,92 @@
 ## Литература
 
 - [Язык программирования Java](https://metanit.com/java/tutorial/)
+- [Java Code Convention на русском](https://www.magnumblog.space/java/translating-java-code-conventions)
+
+## Настройка рабочего окружения
+
+### Ubuntu/Debian
+
+В консоли выполняем следующую команду (в вашем дистрибутиве может не оказаться Java 21, поэтому 21 можно заменить на 17 или 11):
+
+```Bash
+sudo apt install openjdk-21-jdk openjdk-21-source git
+```
+
+Далее переходим в какую-нибудь рабочую папку, например
+
+```Bash
+cd ~/Документы
+```
+
+и клонируем репозиторий
+
+```Bash
+git clone https://github.com/boris-pichugin/yumsh.git
+```
+
+Далее скачиваем JetBrains IDEA Community Edition по [ссылке](https://www.jetbrains.com/idea/download/download-thanks.html?platform=linux&code=IIC).
+
+Распаковываем архив с IDEA в какую-нибудь папку (например, в `~/App/IDEA`).
+
+Запускаем IDEA из командной строки:
+
+```Bash
+~/App/IDEA/bin/idea.sh
+```
+
+В открывшемся окне выбора проектов в левом нижнем углу кликаем по шестерёнке и выбираем пункт меню `Create Desktop Entry...`. Теперь IDEA появится в списке всех приложений вашего рабочего стола.
+
+Закрываем IDEA.
+
+Запускаем IDEA через меню всех приложений. В разделе `Projects` кликаем `Open` и открываем проект из папки `/home/<имя вашего пользователя>/Документы/yumsh/Уроки/2024-2025 10к/JavaProjects/lessons`.
+
+### Windows
+
+Скачиваем и устанавливаем `*.msi` файл с сайта [Adoptium](https://adoptium.net/temurin/releases/?os=windows&arch=x64&package=jdk) (это форк OpenJDK, но с удобным инсаллятором и более долгой поддержкой).
+
+Скачиваем и устанавливаем `git` со страницы [https://git-scm.com/downloads/win](https://git-scm.com/downloads/win).
+
+Скачиваем **JetBrains IDEA Community Edition** по [ссылке](https://www.jetbrains.com/idea/download/download-thanks.html?platform=windows&code=IIC).
+
+Далее будем считать, что у вас есть диск `D:` для хранения всякого личного. Если нет, то можно делать и на диске `C:`.
+
+Запускаем командную строку (например, нажав `Win+x` и кликнув `PowerShell`). И выполняем команды
+
+```Bash
+D:
+mkdir D:\Dev
+cd D:\Dev
+git clone https://github.com/boris-pichugin/yumsh.git
+```
+
+Запускаем IDEA через меню всех приложений. В разделе `Projects` кликаем `Open` и открываем проект из папки `D:\Dev\yumsh\Уроки\2024-2025 10к\JavaProjects\lessons`.
+
+### Далее для всех OS
+
+В IDEA запускаем пункт меню `Project Structure...` (`Ctrl+Alt+Shift+S` или нажимает два раза `Shift` и введя `Project Structure`).
+
+В разделе `SDKs` кликаем на плюсик (слева вверху) и добавляем установленную JDK.
+
+В разделе `Project` в поле SDK выбираем только что добавленную JDK.
+
+Нажимаем `Ok`, чтобы сохранить настройки.
+
+Проверяем, что всё работает. Справа открываем панель `Maven`. Кликаем по `lessons -> Lifecycle -> install`. Проект должен скомпилироваться скачав из интернета библиотеку unit-тестирования. Далее компилировать проект можно будет нажимая `Ctrl+F9`
+
+Идём в класс `src/test/java/org/yumsh/lesson02/SortTest.java`. Нажимаем на зелёные стрелочки и проверяем, что тесты запускаются.
+
+Далее создаём свой пакет (например, `org.pichugin.sort`) в папках `src/main/java` и `src/test/java` (для этого надо кликнуть по этим папкам правой кнопкой мыши и выбрать `New -> Package`).
+
+В папке `src/main/java` копируем класс `org.yumsh.sort.Sort` в свой пакет `org.pichugin.sort`.
+
+В папке `src/test/java` копируем класс `org.yumsh.sort.SortTest` в свой пакет `org.pichugin.sort`. В скопированном классе `SortTest` удаляем строку
+
+```Java
+import org.yumsh.sort.SortTest
+```
+
+Проверяем, что ваш класс `org.pichugin.sort.SortTest` запускается.
 
 ## Алгоритмы сортировки
 
