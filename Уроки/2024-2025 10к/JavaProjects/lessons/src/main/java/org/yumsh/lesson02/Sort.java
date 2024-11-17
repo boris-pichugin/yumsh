@@ -72,6 +72,11 @@ public class Sort {
         }
     }
 
+    /**
+     * Квадратичная сортировка подсчётом.
+     *
+     * @param arr массив, который будет отсортирован.
+     */
     public static void sortByCount(double[] arr) {
         int n = arr.length;
         if (n <= 1) {
@@ -90,6 +95,11 @@ public class Sort {
         }
     }
 
+    /**
+     * Быстрая сортировка.
+     *
+     * @param arr массив, который будет отсортирован.
+     */
     public static void sortByQuick(double[] arr) {
         sortByQuick(arr, 0, arr.length);
     }
