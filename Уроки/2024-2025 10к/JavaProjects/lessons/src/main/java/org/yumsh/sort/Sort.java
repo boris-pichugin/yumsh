@@ -128,4 +128,42 @@ public class Sort {
             sortByQuick(arr, q, r);
         }
     }
+
+    /**
+     * Сортировка слиянием.
+     *
+     * @param arr массив, который будет отсортирован.
+     */
+    public static void sortByMerge(double[] arr) {
+        if (arr.length <= 1) {
+            return;
+        }
+        sortByMerge(arr, new double[arr.length], 0, arr.length);
+    }
+
+    private static void sortByMerge(double[] arr, double[] tmp, int l, int r) {
+        if (r - l <= 1) {
+            return;
+        }
+        int m = (l + r) >> 1; // l < m < r
+        sortByMerge(arr, tmp, l, m);
+        sortByMerge(arr, tmp, m, r);
+
+        int i = l;
+        int i1 = l;
+        int i2 = m;
+        while (i1 < m && i2 < r) {
+            if (arr[i1] < arr[i2]) {
+                tmp[i++] = arr[i1++];
+            } else {
+                tmp[i++] = arr[i2++];
+            }
+        }
+        if (i1 < m) {
+            System.arraycopy(arr, i1, tmp, i, m - i1);
+            System.arraycopy(tmp, l, arr, l, r - l);
+        } else {
+            System.arraycopy(tmp, l, arr, l, i2 - l);
+        }
+    }
 }
