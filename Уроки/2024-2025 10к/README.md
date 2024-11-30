@@ -167,14 +167,14 @@ import org.yumsh.sort.SortTest
 
 - [Описание на Wiki](https://ru.wikipedia.org/wiki/Алгоритм_выбора#Линейный_в_среднем_алгоритм_для_нахождения_k-й_порядковой_статистики)
 - [Описание на Хабре](https://habr.com/ru/articles/115018/)
-- [Реализация на Java](https://github.com/boris-pichugin/yumsh/blob/724db3479f833ef3134074c7617230f0aba86329/Уроки/2024-2025%2010к/JavaProjects/lessons/src/main/java/org/yumsh/sort/MinK.java#L14)
-- [Тест на Java](https://github.com/boris-pichugin/yumsh/blob/724db3479f833ef3134074c7617230f0aba86329/Уроки/2024-2025%2010к/JavaProjects/lessons/src/test/java/org/yumsh/sort/MinKTest.java#L10)
+- [Реализация на Java](https://github.com/boris-pichugin/yumsh/blob/3c92c5a044d690960d869f3e6b2852d1aeece0a2/Уроки/2024-2025%2010к/JavaProjects/lessons/src/main/java/org/yumsh/sort/MinK.java#L14)
+- [Тест на Java](https://github.com/boris-pichugin/yumsh/blob/3c92c5a044d690960d869f3e6b2852d1aeece0a2/Уроки/2024-2025%2010к/JavaProjects/lessons/src/test/java/org/yumsh/sort/MinKTest.java#L10)
 
 ### Сортировка слиянием — *пройдёно (почти)*
 
 - [Описание](https://ru.wikipedia.org/wiki/Сортировка_слиянием)
-- [Реализация на Java](https://github.com/boris-pichugin/yumsh/blob/cb2da4ac439058143593be215884bec5ad27c019/Уроки/2024-2025%2010к/JavaProjects/lessons/src/main/java/org/yumsh/sort/Sort.java#L137)
-- [Тест на Java](https://github.com/boris-pichugin/yumsh/blob/cb2da4ac439058143593be215884bec5ad27c019/Уроки/2024-2025%2010к/JavaProjects/lessons/src/test/java/org/yumsh/sort/SortTest.java#L38)
+- [Реализация на Java](https://github.com/boris-pichugin/yumsh/blob/3c92c5a044d690960d869f3e6b2852d1aeece0a2/Уроки/2024-2025%2010к/JavaProjects/lessons/src/main/java/org/yumsh/sort/Sort.java#L137)
+- [Тест на Java](https://github.com/boris-pichugin/yumsh/blob/3c92c5a044d690960d869f3e6b2852d1aeece0a2/Уроки/2024-2025%2010к/JavaProjects/lessons/src/test/java/org/yumsh/sort/SortTest.java#L38)
 
 ### Пирамидальная сортировка (сортировка кучей)
 
