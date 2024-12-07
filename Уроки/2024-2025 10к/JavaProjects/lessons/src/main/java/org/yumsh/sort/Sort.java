@@ -205,13 +205,11 @@ public class Sort {
                 break;
             }
             int next = i;
-            double max = v;
-            if (max < arr[left]) {
+            if (v < arr[left]) {
                 next = left;
-                max = arr[left];
             }
             int right = left + 1;
-            if (right < heapSize && max < arr[right]) {
+            if (right < heapSize && arr[next] < arr[right]) {
                 next = right;
             }
             if (next == i) {
