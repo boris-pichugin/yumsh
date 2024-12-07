@@ -166,4 +166,60 @@ public class Sort {
             System.arraycopy(tmp, l, arr, l, i2 - l);
         }
     }
+
+    public static void sortByHeap(double[] arr) {
+        // I этап
+        int n = arr.length;
+        for (int i = 1; i < n; i++) {
+            siftUp(arr, i);
+        }
+        // II этап
+        for (int i = n - 1; i > 0; i--) {
+            // Поменять arr[0] <-> arr[i]
+            double tmp = arr[i];
+            arr[i] = arr[0];
+            arr[0] = tmp;
+            siftDown(arr, i);
+        }
+    }
+
+    private static void siftUp(double[] arr, int i) {
+        double v = arr[i];
+        while (i > 0) {
+            int parent = (i - 1) / 2;
+            if (v <= arr[parent]) {
+                break;
+            }
+            arr[i] = arr[parent];
+            i = parent;
+        }
+        arr[i] = v;
+    }
+
+    private static void siftDown(double[] arr, int heapSize) {
+        int i = 0;
+        double v = arr[i];
+        while (true) {
+            int left = 2 * i + 1;
+            if (heapSize <= left) {
+                break;
+            }
+            int next = i;
+            double max = v;
+            if (max < arr[left]) {
+                next = left;
+                max = arr[left];
+            }
+            int right = left + 1;
+            if (right < heapSize && max < arr[right]) {
+                next = right;
+            }
+            if (next == i) {
+                break;
+            }
+            arr[i] = arr[next];
+            i = next;
+        }
+        arr[i] = v;
+    }
 }

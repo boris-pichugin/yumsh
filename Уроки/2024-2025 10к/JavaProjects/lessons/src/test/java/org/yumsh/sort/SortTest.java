@@ -39,6 +39,11 @@ public class SortTest {
         testSortDoublesMethod(Sort::sortByMerge);
     }
 
+    @Test
+    public void testSortByHeap() {
+        testSortDoublesMethod(Sort::sortByHeap);
+    }
+
     private void testSortDoublesMethod(Consumer<double[]> sortMethod) {
         Random rnd = new Random();
         testSortOneArray(sortMethod, new double[0], rnd);
