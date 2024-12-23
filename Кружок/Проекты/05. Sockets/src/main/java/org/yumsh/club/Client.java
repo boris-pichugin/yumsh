@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) throws IOException {
-//        try (Socket socket = new Socket("192.168.1.163", 5333)) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ваше имя: ");
         String name = scanner.nextLine();
@@ -23,6 +22,9 @@ public class Client {
             BufferedReader br = new BufferedReader(reader);
 
             writer.write(name + '\n');
+            writer.flush();
+
+            startReadThread(br);
             while (true) {
                 System.out.print("Ваше сообщение: ");
                 String msgToSend = scanner.nextLine();
@@ -33,10 +35,24 @@ public class Client {
 
                 writer.write(msgToSend + "\n");
                 writer.flush();
-
-                String msg = br.readLine();
-                System.out.println("Клиент получил: " + msg);
             }
         }
+    }
+
+    private static void startReadThread(BufferedReader reader) {
+        Thread thread = new Thread(() -> {
+            try {
+                while (true) {
+                    String msg = reader.readLine();
+                    if (msg == null) {
+                        return;
+                    }
+                    System.out.print("\r" + msg + "\nВаше сообщение: ");
+                }
+            } catch (Exception ignored) {
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 }

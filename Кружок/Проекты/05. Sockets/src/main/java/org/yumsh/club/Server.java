@@ -12,8 +12,8 @@ public class Server {
             while (true) {
                 Socket socket = server.accept();
                 Thread thread = new Thread(
-                        () -> handleClientSocket(socket),
-                        "MyThread-" + (++i)
+                    () -> handleClientSocket(socket),
+                    "MyThread-" + (++i)
                 );
                 thread.setDaemon(true);
                 thread.start();
@@ -35,7 +35,7 @@ public class Server {
             if (clientName == null) {
                 return;
             }
-
+            sendPingMessages(writer, clientName);
             while (true) {
                 String msg = br.readLine();
                 if (msg == null) {
@@ -49,5 +49,25 @@ public class Server {
         } catch (final Exception e) {
             e.printStackTrace(System.err);
         }
+    }
+
+    private static void sendPingMessages(OutputStreamWriter writer, String clientName) {
+        Thread thread = new Thread(() -> {
+            try {
+                long sleep = 5_000L;
+                long startTime = System.currentTimeMillis();
+                while (true) {
+                    Thread.sleep(sleep);
+                    long duraton = System.currentTimeMillis() - startTime;
+                    String msg = "%s: Мы общаемся уже %d ms\n".formatted(clientName, duraton);
+                    System.out.print(msg);
+                    writer.write(msg);
+                    writer.flush();
+                }
+            } catch (Exception ignored) {
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 }
