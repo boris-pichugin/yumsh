@@ -4,15 +4,19 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-public class Server {
+public class ChatServer {
     public static void main(String[] args) {
         try (ServerSocket server = new ServerSocket(5333, 3)) {
+            Set<ChatClient> clients = new HashSet<>();
             int i = 0;
             while (true) {
                 Socket socket = server.accept();
                 Thread thread = new Thread(
-                    () -> handleClientSocket(socket),
+                    () -> handleClientSocket(socket, clients),
                     "MyThread-" + (++i)
                 );
                 thread.setDaemon(true);
@@ -23,7 +27,7 @@ public class Server {
         }
     }
 
-    private static void handleClientSocket(Socket socket) {
+    private static void handleClientSocket(Socket socket, final Set<ChatClient> clients) {
         try (socket) {
             InputStream in = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
@@ -35,39 +39,36 @@ public class Server {
             if (clientName == null) {
                 return;
             }
-            sendPingMessages(writer, clientName);
+            ChatClient currentClient = new ChatClient(clientName, writer);
+            synchronized (clients) {
+                clients.add(currentClient);
+            }
             while (true) {
                 String msg = br.readLine();
                 if (msg == null) {
+                    synchronized (clients) {
+                        clients.remove(currentClient);
+                    }
                     break;
                 }
                 System.out.println(clientName + ": " + msg);
 
-                writer.write(clientName + ": " + msg + '\n');
-                writer.flush();
+                synchronized (clients) {
+                    Iterator<ChatClient> iterator = clients.iterator();
+                    while (iterator.hasNext()) {
+                        ChatClient client = iterator.next();
+                        if (client != currentClient) {
+                            try {
+                                client.sendMessage(clientName + ": " + msg);
+                            } catch (IOException e) {
+                                iterator.remove();
+                            }
+                        }
+                    }
+                }
             }
         } catch (final Exception e) {
             e.printStackTrace(System.err);
         }
-    }
-
-    private static void sendPingMessages(OutputStreamWriter writer, String clientName) {
-        Thread thread = new Thread(() -> {
-            try {
-                long sleep = 5_000L;
-                long startTime = System.currentTimeMillis();
-                while (true) {
-                    Thread.sleep(sleep);
-                    long duraton = System.currentTimeMillis() - startTime;
-                    String msg = "%s: Мы общаемся уже %d ms\n".formatted(clientName, duraton);
-                    System.out.print(msg);
-                    writer.write(msg);
-                    writer.flush();
-                }
-            } catch (Exception ignored) {
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
     }
 }
