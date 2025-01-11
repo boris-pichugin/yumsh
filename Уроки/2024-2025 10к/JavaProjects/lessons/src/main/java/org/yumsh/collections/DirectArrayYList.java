@@ -25,7 +25,7 @@ public class DirectArrayYList implements YList {
     @Override
     public void add(Object item) {
         Object[] newValues = Arrays.copyOf(values, values.length + 1);
-        newValues[values.length - 1] = item;
+        newValues[values.length] = item;
         values = newValues;
     }
 
