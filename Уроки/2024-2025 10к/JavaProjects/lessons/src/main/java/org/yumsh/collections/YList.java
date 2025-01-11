@@ -50,4 +50,11 @@ public interface YList {
      * или {@code -1}, если элемента в списке нет.
      */
     int indexOf(Object item);
+
+    /**
+     * Удалить все вхождения данного элемента из списка.
+     *
+     * @param item удаляемый элемент.
+     */
+    void removeAll(Object item);
 }

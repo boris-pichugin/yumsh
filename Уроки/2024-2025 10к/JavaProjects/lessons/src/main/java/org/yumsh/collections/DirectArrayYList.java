@@ -1,6 +1,7 @@
 package org.yumsh.collections;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class DirectArrayYList implements YList {
 
@@ -23,22 +24,42 @@ public class DirectArrayYList implements YList {
 
     @Override
     public void add(Object item) {
-        values = Arrays.copyOf(values, values.length + 1);
-        values[values.length - 1] = item;
+        Object[] newValues = Arrays.copyOf(values, values.length + 1);
+        newValues[values.length - 1] = item;
+        values = newValues;
     }
 
     @Override
     public void insert(int i, Object item) {
-
+        int n = values.length;
+        Object[] newValues = new Object[n + 1];
+        System.arraycopy(values, 0, newValues, 0, i);
+        System.arraycopy(values, i, newValues, i + 1, n - i);
+        newValues[i] = item;
+        values = newValues;
     }
 
     @Override
     public void remove(int i) {
-
+        int n = values.length;
+        Object[] newValues = new Object[n - 1];
+        System.arraycopy(values, 0, newValues, 0, i);
+        System.arraycopy(values, i + 1, newValues, i, n - (i + 1));
+        values = newValues;
     }
 
     @Override
     public int indexOf(Object item) {
-        return 0;
+        for (int i = 0; i < values.length; i++) {
+            if (Objects.equals(item, values[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public void removeAll(Object item) {
+        // TODO
     }
 }
