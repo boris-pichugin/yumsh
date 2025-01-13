@@ -3,7 +3,7 @@ package org.yumsh.club;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-class ChatClient {
+public class ChatClient {
     public final String name;
     private final OutputStreamWriter writer;
 

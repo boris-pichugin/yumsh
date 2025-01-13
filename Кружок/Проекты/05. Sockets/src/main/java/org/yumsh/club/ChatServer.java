@@ -4,14 +4,11 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 public class ChatServer {
     public static void main(String[] args) {
         try (ServerSocket server = new ServerSocket(5333, 3)) {
-            Set<ChatClient> clients = new HashSet<>();
+            ChatClients clients = new ChatClients();
             int i = 0;
             while (true) {
                 Socket socket = server.accept();
@@ -27,7 +24,7 @@ public class ChatServer {
         }
     }
 
-    private static void handleClientSocket(Socket socket, final Set<ChatClient> clients) {
+    private static void handleClientSocket(Socket socket, final ChatClients clients) {
         try (socket) {
             InputStream in = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
@@ -40,32 +37,16 @@ public class ChatServer {
                 return;
             }
             ChatClient currentClient = new ChatClient(clientName, writer);
-            synchronized (clients) {
-                clients.add(currentClient);
-            }
+            clients.add(currentClient);
             while (true) {
                 String msg = br.readLine();
                 if (msg == null) {
-                    synchronized (clients) {
-                        clients.remove(currentClient);
-                    }
+                    clients.remove(currentClient);
                     break;
                 }
                 System.out.println(clientName + ": " + msg);
 
-                synchronized (clients) {
-                    Iterator<ChatClient> iterator = clients.iterator();
-                    while (iterator.hasNext()) {
-                        ChatClient client = iterator.next();
-                        if (client != currentClient) {
-                            try {
-                                client.sendMessage(clientName + ": " + msg);
-                            } catch (IOException e) {
-                                iterator.remove();
-                            }
-                        }
-                    }
-                }
+                clients.sendToAll(currentClient, msg);
             }
         } catch (final Exception e) {
             e.printStackTrace(System.err);
