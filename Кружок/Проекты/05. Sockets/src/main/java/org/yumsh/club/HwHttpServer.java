@@ -5,15 +5,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public class ChatServer {
+public class HwHttpServer {
     public static void main(String[] args) {
         try (ServerSocket server = new ServerSocket(5333, 3)) {
-            ChatRoom chatRoom = new ChatRoom();
             int i = 0;
             while (true) {
                 Socket socket = server.accept();
                 Thread thread = new Thread(
-                    () -> handleClientSocket(socket, chatRoom),
+                    () -> handleClientSocket(socket),
                     "MyThread-" + (++i)
                 );
                 thread.setDaemon(true);
@@ -24,30 +23,25 @@ public class ChatServer {
         }
     }
 
-    private static void handleClientSocket(Socket socket, final ChatRoom chatRoom) {
+    private static void handleClientSocket(Socket socket) {
         try (socket) {
             InputStream in = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(reader);
             OutputStream out = socket.getOutputStream();
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 
-            String clientName = br.readLine();
-            if (clientName == null) {
-                return;
-            }
-            ChatClient currentClient = new ChatClient(clientName, writer);
-            chatRoom.add(currentClient);
-            while (true) {
-                String msg = br.readLine();
-                if (msg == null) {
-                    chatRoom.remove(currentClient);
-                    break;
-                }
-                System.out.println(clientName + ": " + msg);
-
-                chatRoom.sendToAll(currentClient, msg);
-            }
+            String  answer = """
+                HTTP/2 200
+                content-type: text/html; charset=utf-8
+                content-language: ru
+                cache-control: public, max-age=600
+                last-modified: Mon, 03 Feb 2025 01:34:14 GMT
+                
+                Привет, мир!
+                """;
+            writer.write(answer);
+            writer.flush();
         } catch (final Exception e) {
             e.printStackTrace(System.err);
         }
