@@ -24,9 +24,9 @@ public class Client {
             writer.write(name + '\n');
             writer.flush();
 
-            startReadThread(br);
+            startReadThread(name, br);
             while (true) {
-                System.out.print("Ваше сообщение: ");
+                System.out.print(name + ": ");
                 String msgToSend = scanner.nextLine();
                 if (msgToSend.isEmpty()) {
                     System.out.println("Пока!");
@@ -39,7 +39,7 @@ public class Client {
         }
     }
 
-    private static void startReadThread(BufferedReader reader) {
+    private static void startReadThread(String name, BufferedReader reader) {
         Thread thread = new Thread(() -> {
             try {
                 while (true) {
@@ -47,7 +47,7 @@ public class Client {
                     if (msg == null) {
                         return;
                     }
-                    System.out.print("\r" + msg + "\nВаше сообщение: ");
+                    System.out.print("\r" + msg + "\n" + name + ": ");
                 }
             } catch (Exception ignored) {
             }
