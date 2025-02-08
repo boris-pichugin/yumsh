@@ -7,8 +7,9 @@ public class Main {
         list.add("Hello!");
         list.add("World!");
         list.add(1);
-        System.out.println(list.size());
-        System.out.println(list.get(0));
-        System.out.println(list.get(2));
+
+        for (int i = 0; i < 1024; i++) {
+            list.add(i);
+        }
     }
 }

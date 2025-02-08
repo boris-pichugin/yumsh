@@ -60,6 +60,14 @@ public class DirectArrayYList implements YList {
 
     @Override
     public void removeAll(Object item) {
-        // TODO
+        int j = 0;
+        for (int i = 0; i < values.length; i++) {
+            if (!Objects.equals(values[i], item)) {
+                values[j++] = values[i];
+            }
+        }
+        if (j < values.length) {
+            values = Arrays.copyOf(values, j);
+        }
     }
 }
