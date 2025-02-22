@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 public class YListTest {
 
     private static YList createList() {
-        return new DirectArrayYList();
-//        return new ArrayYList();
+//        return new DirectArrayYList();
+        return new ArrayYList();
     }
 
     @Test
@@ -20,6 +20,11 @@ public class YListTest {
             list.add(i);
             Assertions.assertEquals(2 + i, list.size());
         }
+    }
+
+    @Test
+    public void testAdd() {
+        // TODO
     }
 
     @Test
@@ -58,6 +63,21 @@ public class YListTest {
             Assertions.fail();
         } catch (Exception ignored) {
         }
+    }
+
+    @Test
+    public void testRemove() {
+        // TODO
+    }
+
+    @Test
+    public void testIndexOf() {
+        // TODO
+    }
+
+    @Test
+    public void testRemoveAll() {
+        // TODO
     }
 
     private static void checkValues(YList list, Object... values) {
