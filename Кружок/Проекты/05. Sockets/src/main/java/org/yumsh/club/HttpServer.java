@@ -33,7 +33,6 @@ public class HttpServer {
             InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(reader);
             OutputStream out = socket.getOutputStream();
-            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 
             String methodLine = br.readLine();
             if (methodLine == null) {
@@ -43,7 +42,7 @@ public class HttpServer {
                 !methodLine.startsWith("GET ")
                 || !methodLine.endsWith(" HTTP/1.1")
             ) {
-                writeError(writer, "400 Bad Request");
+                writeError(out, "400 Bad Request");
                 return;
             }
 
@@ -60,7 +59,7 @@ public class HttpServer {
 
                 byte[] fileContent = Files.readAllBytes(path);
 
-                String answer = """
+                String answerHeaders = """
                     HTTP/1.1 200 Ok\r
                     content-type: text/html; charset=utf-8\r
                     content-language: ru\r
@@ -68,21 +67,20 @@ public class HttpServer {
                     content-length: %d\r
                     \r
                     """.formatted(fileContent.length);
-                writer.write(answer);
-                writer.flush();
+                out.write(answerHeaders.getBytes(StandardCharsets.US_ASCII));
                 out.write(fileContent);
                 out.flush();
             } catch (IOException e) {
-                writeError(writer, "404 Not Found");
+                writeError(out, "404 Not Found");
             }
         } catch (final Exception e) {
             e.printStackTrace(System.err);
         }
     }
 
-    private static void writeError(OutputStreamWriter writer, String errorStatus) throws IOException {
+    private static void writeError(OutputStream out, String errorStatus) throws IOException {
         String answer = "HTTP/1.1 %s\r\n\r\n".formatted(errorStatus);
-        writer.write(answer);
-        writer.flush();
+        out.write(answer.getBytes(StandardCharsets.US_ASCII));
+        out.flush();
     }
 }
