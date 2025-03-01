@@ -15,24 +15,24 @@ public interface YList {
 
     /**
      * @param i    номер элемента, который требуется изменить: {@code 0 <= i < size()}.
-     * @param item новый элемент.
+     * @param value новый элемент.
      */
-    void set(int i, Object item);
+    void set(int i, Object value);
 
     /**
      * Добавить элемент в конец списка.
      *
-     * @param item новый элемент.
+     * @param value новый элемент.
      */
-    void add(Object item);
+    void add(Object value);
 
     /**
      * @param i    номер элемента, на место которого
      *             следует вставить новый элемент:
      *             {@code 0 <= i <= size()}.
-     * @param item новый элемент.
+     * @param value новый элемент.
      */
-    void insert(int i, Object item);
+    void insert(int i, Object value);
 
     /**
      * Удалить элемент.
@@ -45,16 +45,16 @@ public interface YList {
     /**
      * Найти элемент.
      *
-     * @param item искомый элемент.
+     * @param value искомый элемент.
      * @return номер первого элемента, если он в списке есть,
      * или {@code -1}, если элемента в списке нет.
      */
-    int indexOf(Object item);
+    int indexOf(Object value);
 
     /**
      * Удалить все вхождения данного элемента из списка.
      *
-     * @param item удаляемый элемент.
+     * @param value удаляемый элемент.
      */
-    void removeAll(Object item);
+    void removeAll(Object value);
 }

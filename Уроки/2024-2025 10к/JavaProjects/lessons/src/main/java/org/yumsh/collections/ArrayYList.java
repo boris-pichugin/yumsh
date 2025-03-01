@@ -21,23 +21,23 @@ public class ArrayYList implements YList {
     }
 
     @Override
-    public void set(int i, Object item) {
+    public void set(int i, Object value) {
         if (size <= i) {
             throw new ArrayIndexOutOfBoundsException(i);
         }
-        values[i] = item;
+        values[i] = value;
     }
 
     @Override
-    public void add(Object item) {
+    public void add(Object value) {
         if (size == values.length) {
             values = Arrays.copyOf(values, size * 2);
         }
-        values[size++] = item;
+        values[size++] = value;
     }
 
     @Override
-    public void insert(int i, Object item) {
+    public void insert(int i, Object value) {
         if (size < i) {
             throw new ArrayIndexOutOfBoundsException(i);
         }
@@ -49,7 +49,7 @@ public class ArrayYList implements YList {
         } else {
             System.arraycopy(values, i, values, i + 1, size - i);
         }
-        values[i] = item;
+        values[i] = value;
         size += 1;
     }
 
@@ -64,9 +64,9 @@ public class ArrayYList implements YList {
     }
 
     @Override
-    public int indexOf(Object item) {
+    public int indexOf(Object value) {
         for (int i = 0; i < size; i++) {
-            if (Objects.equals(item, values[i])) {
+            if (Objects.equals(value, values[i])) {
                 return i;
             }
         }
@@ -74,10 +74,10 @@ public class ArrayYList implements YList {
     }
 
     @Override
-    public void removeAll(Object item) {
+    public void removeAll(Object value) {
         int j = 0;
         for (int i = 0; i < size; i++) {
-            if (!Objects.equals(values[i], item)) {
+            if (!Objects.equals(values[i], value)) {
                 values[j++] = values[i];
             }
         }

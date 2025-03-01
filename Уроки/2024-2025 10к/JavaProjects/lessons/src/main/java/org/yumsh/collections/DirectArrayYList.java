@@ -18,24 +18,24 @@ public class DirectArrayYList implements YList {
     }
 
     @Override
-    public void set(int i, Object item) {
-        values[i] = item;
+    public void set(int i, Object value) {
+        values[i] = value;
     }
 
     @Override
-    public void add(Object item) {
+    public void add(Object value) {
         Object[] newValues = Arrays.copyOf(values, values.length + 1);
-        newValues[values.length] = item;
+        newValues[values.length] = value;
         values = newValues;
     }
 
     @Override
-    public void insert(int i, Object item) {
+    public void insert(int i, Object value) {
         int n = values.length;
         Object[] newValues = new Object[n + 1];
         System.arraycopy(values, 0, newValues, 0, i);
         System.arraycopy(values, i, newValues, i + 1, n - i);
-        newValues[i] = item;
+        newValues[i] = value;
         values = newValues;
     }
 
@@ -49,9 +49,9 @@ public class DirectArrayYList implements YList {
     }
 
     @Override
-    public int indexOf(Object item) {
+    public int indexOf(Object value) {
         for (int i = 0; i < values.length; i++) {
-            if (Objects.equals(item, values[i])) {
+            if (Objects.equals(value, values[i])) {
                 return i;
             }
         }
@@ -59,10 +59,10 @@ public class DirectArrayYList implements YList {
     }
 
     @Override
-    public void removeAll(Object item) {
+    public void removeAll(Object value) {
         int j = 0;
         for (int i = 0; i < values.length; i++) {
-            if (!Objects.equals(values[i], item)) {
+            if (!Objects.equals(values[i], value)) {
                 values[j++] = values[i];
             }
         }
