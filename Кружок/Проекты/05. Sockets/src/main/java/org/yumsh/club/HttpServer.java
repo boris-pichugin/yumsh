@@ -59,14 +59,24 @@ public class HttpServer {
 
                 byte[] fileContent = Files.readAllBytes(path);
 
+
+                String contentType;
+                if (resourceName.endsWith(".ico")) {
+                    contentType = "image/x-icon";
+                } else if (resourceName.endsWith(".png")) {
+                    contentType = "image/png";
+                } else {
+                    contentType = "text/html; charset=utf-8";
+                }
+
                 String answerHeaders = """
                     HTTP/1.1 200 Ok\r
-                    content-type: text/html; charset=utf-8\r
+                    content-type: %s\r
                     content-language: ru\r
                     cache-control: public, max-age=600\r
                     content-length: %d\r
                     \r
-                    """.formatted(fileContent.length);
+                    """.formatted(contentType, fileContent.length);
                 out.write(answerHeaders.getBytes(StandardCharsets.US_ASCII));
                 out.write(fileContent);
                 out.flush();
