@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
 public class HttpServer {
@@ -50,30 +51,24 @@ public class HttpServer {
             if (resourceName.equals("/") || resourceName.equals("/index")) {
                 resourceName = "index.html";
             }
-            while (resourceName.startsWith("/")) {
+            if (resourceName.startsWith("/")) {
                 resourceName = resourceName.substring(1);
             }
-
             try {
-                Path path = WWW_ROOT.resolve(resourceName);
-
-                byte[] fileContent = Files.readAllBytes(path);
-
-
-                String contentType;
-                if (resourceName.endsWith(".ico")) {
-                    contentType = "image/x-icon";
-                } else if (resourceName.endsWith(".png")) {
-                    contentType = "image/png";
-                } else {
-                    contentType = "text/html; charset=utf-8";
+                Path path = WWW_ROOT.resolve(resourceName).toRealPath(LinkOption.NOFOLLOW_LINKS);
+                if (!path.startsWith(WWW_ROOT.toAbsolutePath())) {
+                    writeError(out, "404 Not Found");
+                    return;
                 }
+
+                String contentType = getContentType(resourceName);
+                byte[] fileContent = transform(resourceName, Files.readAllBytes(path));
 
                 String answerHeaders = """
                     HTTP/1.1 200 Ok\r
                     content-type: %s\r
                     content-language: ru\r
-                    cache-control: public, max-age=600\r
+                    cache-control: no-cache\r
                     content-length: %d\r
                     \r
                     """.formatted(contentType, fileContent.length);
@@ -86,6 +81,27 @@ public class HttpServer {
         } catch (final Exception e) {
             e.printStackTrace(System.err);
         }
+    }
+
+    private static String getContentType(String resourceName) {
+        if (resourceName.endsWith(".ico")) {
+            return "image/x-icon";
+        }
+        if (resourceName.endsWith(".png")) {
+            return "image/png";
+        } else {
+            return "text/html; charset=utf-8";
+        }
+    }
+
+    private static byte[] transform(String resourceName, byte[] bytes) {
+        if (!resourceName.endsWith(".html")) {
+            return bytes;
+        }
+        String content = new String(bytes, StandardCharsets.UTF_8);
+        String currentTimestamp = "%tF %<tT %<tz".formatted(System.currentTimeMillis());
+        String newContent = content.replaceAll("\\$\\{CURRENT_DATE}", currentTimestamp);
+        return newContent.getBytes(StandardCharsets.UTF_8);
     }
 
     private static void writeError(OutputStream out, String errorStatus) throws IOException {
