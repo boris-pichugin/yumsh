@@ -38,7 +38,7 @@ public class ArrayYList implements YList {
 
     @Override
     public void insert(int i, Object value) {
-        if (size < i) {
+        if (i < 0 || size < i) {
             throw new ArrayIndexOutOfBoundsException(i);
         }
         if (size == values.length) {
@@ -55,7 +55,7 @@ public class ArrayYList implements YList {
 
     @Override
     public void remove(int i) {
-        if (size <= i) {
+        if (i < 0 || size <= i) {
             throw new ArrayIndexOutOfBoundsException(i);
         }
         size -= 1;
