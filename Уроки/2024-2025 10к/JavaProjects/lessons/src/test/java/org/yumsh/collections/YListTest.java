@@ -231,6 +231,13 @@ public class YListTest {
             1, 2, 3, 5, 6, 7, 8, 9,
             10, 11, 12, 13, 14, 16, 17, 18
         );
+        while (list.size() > 0) {
+            list.remove(list.size() / 2);
+        }
+        checkValues(list);
+
+        list.add("x");
+        checkValues(list, "x");
     }
 
     @Test
@@ -297,6 +304,16 @@ public class YListTest {
             "1", "3", "4",
             "1", "3", "4", "x"
         );
+
+        list.removeAll("1");
+        list.removeAll("3");
+        list.removeAll("4");
+        list.removeAll("x");
+
+        checkValues(list);
+
+        list.add("y");
+        checkValues(list, "y");
     }
 
     private static void checkValues(YList list, Object... values) {
