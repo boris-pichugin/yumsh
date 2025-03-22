@@ -290,6 +290,13 @@ public class YListTest {
             "1", "3", "4",
             "1", "3", "4"
         );
+
+        list.add("x");
+        checkValues(list,
+            "1", "3", "4",
+            "1", "3", "4",
+            "1", "3", "4", "x"
+        );
     }
 
     private static void checkValues(YList list, Object... values) {
