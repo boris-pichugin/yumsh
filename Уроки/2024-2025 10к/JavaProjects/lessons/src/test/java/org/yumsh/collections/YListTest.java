@@ -7,7 +7,8 @@ public class YListTest {
 
     private static YList createList() {
 //        return new DirectArrayYList();
-        return new ArrayYList();
+//        return new ArrayYList();
+        return new LinkedYList();
     }
 
     @Test
