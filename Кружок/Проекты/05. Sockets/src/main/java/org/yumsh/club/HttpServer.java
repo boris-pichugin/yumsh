@@ -39,48 +39,59 @@ public class HttpServer {
             if (methodLine == null) {
                 return;
             }
-            if (
-                !methodLine.startsWith("GET ")
-                || !methodLine.endsWith(" HTTP/1.1")
-            ) {
+            if (!methodLine.endsWith(" HTTP/1.1")) {
                 writeError(out, "400 Bad Request");
                 return;
             }
 
-            String resourceName = methodLine.substring(4, methodLine.length() - 9);
-            if (resourceName.equals("/") || resourceName.equals("/index")) {
-                resourceName = "index.html";
-            }
-            if (resourceName.startsWith("/")) {
-                resourceName = resourceName.substring(1);
-            }
             try {
-                Path path = WWW_ROOT.resolve(resourceName).toRealPath(LinkOption.NOFOLLOW_LINKS);
-                if (!path.startsWith(WWW_ROOT.toAbsolutePath())) {
-                    writeError(out, "404 Not Found");
-                    return;
+                if (methodLine.startsWith("GET ")) {
+                    handleGetRequest(methodLine, out);
+                } else if (methodLine.startsWith("POST ")) {
+                    handlePostRequest(methodLine, out);
+                } else {
+                    writeError(out, "400 Bad Request");
                 }
-
-                String contentType = getContentType(resourceName);
-                byte[] fileContent = transform(resourceName, Files.readAllBytes(path));
-
-                String answerHeaders = """
-                    HTTP/1.1 200 Ok\r
-                    content-type: %s\r
-                    content-language: ru\r
-                    cache-control: no-cache\r
-                    content-length: %d\r
-                    \r
-                    """.formatted(contentType, fileContent.length);
-                out.write(answerHeaders.getBytes(StandardCharsets.US_ASCII));
-                out.write(fileContent);
-                out.flush();
             } catch (IOException e) {
                 writeError(out, "404 Not Found");
             }
         } catch (final Exception e) {
             e.printStackTrace(System.err);
         }
+    }
+
+    private static void handleGetRequest(String methodLine, OutputStream out) throws IOException {
+        String resourceName = getResourceName(methodLine);
+        Path path = getResourcePath(resourceName);
+        String contentType = getContentType(resourceName);
+        byte[] fileContent = transform(resourceName, Files.readAllBytes(path));
+
+        writeOk(out, contentType, fileContent);
+    }
+
+    private static void handlePostRequest(String methodLine, OutputStream out) throws IOException {
+        // TODO
+        handleGetRequest(methodLine, out);
+    }
+
+    private static String getResourceName(String methodLine) {
+        int start = methodLine.indexOf(' ') + 1;
+        String resourceName = methodLine.substring(start, methodLine.length() - 9);
+        if (resourceName.equals("/") || resourceName.equals("/index")) {
+            resourceName = "index.html";
+        }
+        if (resourceName.startsWith("/")) {
+            resourceName = resourceName.substring(1);
+        }
+        return resourceName;
+    }
+
+    private static Path getResourcePath(String resourceName) throws IOException {
+        Path path = WWW_ROOT.resolve(resourceName).toRealPath(LinkOption.NOFOLLOW_LINKS);
+        if (!path.startsWith(WWW_ROOT.toAbsolutePath())) {
+            throw new IOException();
+        }
+        return path;
     }
 
     private static String getContentType(String resourceName) {
@@ -107,6 +118,20 @@ public class HttpServer {
     private static void writeError(OutputStream out, String errorStatus) throws IOException {
         String answer = "HTTP/1.1 %s\r\n\r\n".formatted(errorStatus);
         out.write(answer.getBytes(StandardCharsets.US_ASCII));
+        out.flush();
+    }
+
+    private static void writeOk(OutputStream out, String contentType, byte[] fileContent) throws IOException {
+        String answerHeaders = """
+            HTTP/1.1 200 Ok\r
+            content-type: %s\r
+            content-language: ru\r
+            cache-control: no-cache\r
+            content-length: %d\r
+            \r
+            """.formatted(contentType, fileContent.length);
+        out.write(answerHeaders.getBytes(StandardCharsets.US_ASCII));
+        out.write(fileContent);
         out.flush();
     }
 }

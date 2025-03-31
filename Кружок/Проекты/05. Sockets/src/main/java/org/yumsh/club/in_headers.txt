@@ -1,0 +1,21 @@
+
+
+GET / HTTP/1.1
+GET /index HTTP/1.1
+GET /index.htm HTTP/1.1
+GET /index.html HTTP/1.1
+
+Host: localhost:63342
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Cookie: Idea-7d6f63c5=b315a122-7201-4a77-bbd5-c7f4e0f18db5
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Mon, 10 Feb 2025 06:53:31 GMT
+Priority: u=0, i
