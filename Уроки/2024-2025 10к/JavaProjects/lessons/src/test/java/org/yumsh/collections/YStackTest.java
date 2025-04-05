@@ -32,6 +32,12 @@ public class YStackTest {
         } catch (Exception ignored) {
         }
 
+        try {
+            stack.peek();
+            Assertions.fail();
+        } catch (Exception ignored) {
+        }
+
         int size = 100;
         for (int i = 0; i < size; i++) {
             String value = "" + i;
@@ -42,10 +48,17 @@ public class YStackTest {
             String expected = "" + i;
             Assertions.assertEquals(expected, stack.peek());
             Assertions.assertEquals(expected, stack.pop());
+            Assertions.assertEquals(i, stack.size());
         }
 
         try {
             stack.pop();
+            Assertions.fail();
+        } catch (Exception ignored) {
+        }
+
+        try {
+            stack.peek();
             Assertions.fail();
         } catch (Exception ignored) {
         }
