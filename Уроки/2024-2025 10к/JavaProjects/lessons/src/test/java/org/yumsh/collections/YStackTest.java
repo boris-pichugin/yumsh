@@ -8,7 +8,7 @@ public class YStackTest {
     private static YStack createStack() {
 //        return new DirectArrayYStack();
 //        return new ArrayYStack();
-        return new ArrayYStack();
+        return new LinkedYStack();
     }
 
     @Test
