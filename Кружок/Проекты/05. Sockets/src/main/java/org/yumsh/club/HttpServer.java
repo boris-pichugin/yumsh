@@ -7,6 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class HttpServer {
     private static final Path WWW_ROOT = Path.of("www");
@@ -31,7 +34,7 @@ public class HttpServer {
     private static void handleClientSocket(Socket socket) {
         try (socket) {
             InputStream in = socket.getInputStream();
-            InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
+            InputStreamReader reader = new InputStreamReader(in, StandardCharsets.US_ASCII);
             BufferedReader br = new BufferedReader(reader);
             OutputStream out = socket.getOutputStream();
 
@@ -48,7 +51,7 @@ public class HttpServer {
                 if (methodLine.startsWith("GET ")) {
                     handleGetRequest(methodLine, out);
                 } else if (methodLine.startsWith("POST ")) {
-                    handlePostRequest(methodLine, out);
+                    handlePostRequest(methodLine, br, out);
                 } else {
                     writeError(out, "400 Bad Request");
                 }
@@ -69,9 +72,62 @@ public class HttpServer {
         writeOk(out, contentType, fileContent);
     }
 
-    private static void handlePostRequest(String methodLine, OutputStream out) throws IOException {
-        // TODO
-        handleGetRequest(methodLine, out);
+    private static void handlePostRequest(String methodLine, BufferedReader br, OutputStream out) throws IOException {
+        String resourceName = getResourceName(methodLine);
+        Path path = getResourcePath(resourceName);
+        String contentType = getContentType(resourceName);
+        byte[] fileContent = transform(resourceName, Files.readAllBytes(path));
+
+        Map<String, String> headers = parseHeaders(br);
+        if (headers == null) {
+            return;
+        }
+
+        int inContentLength = Integer.parseInt(headers.getOrDefault("content-length", "0"));
+        char[] postParams = readParams(br, inContentLength);
+        if (postParams == null) {
+            return;
+        }
+
+        Map<String, String> params = parseParams(postParams);
+    }
+
+    private static Map<String, String> parseHeaders(BufferedReader br) throws IOException {
+        Map<String, String> headers = new HashMap<>();
+        while (true) {
+            String header = br.readLine();
+            if (header == null) {
+                return null;
+            }
+            header = header.trim();
+            if (header.isEmpty()) {
+                break;
+            }
+            int separator = header.indexOf(':');
+            if (separator >= 0) {
+                String key = header.substring(0, separator).toLowerCase(Locale.ROOT);
+                String value = header.substring(separator + 2);
+                headers.put(key, value);
+            }
+        }
+        return headers;
+    }
+
+    private static char[] readParams(BufferedReader br, int inContentLength) throws IOException {
+        char[] postParams = new char[inContentLength];
+        int offset = 0;
+        while (offset < inContentLength) {
+            int readSize = br.read(postParams, offset, inContentLength - offset);
+            if (readSize == -1) {
+                return null;
+            }
+            offset += readSize;
+        }
+        return postParams;
+    }
+
+    private static Map<String, String> parseParams(char[] postParams) {
+        return null;
     }
 
     private static String getResourceName(String methodLine) {
