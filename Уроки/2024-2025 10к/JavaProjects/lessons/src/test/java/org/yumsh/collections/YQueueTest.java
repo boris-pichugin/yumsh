@@ -62,4 +62,39 @@ public class YQueueTest {
         } catch (Exception ignored) {
         }
     }
+
+    @Test
+    public void testSmallSize() {
+        YQueue queue = createQueue();
+
+        int size = 5;
+        for (int i = 0; i < size; i++) {
+            queue.add("" + i);
+        }
+
+        for (int i = size; i < 1000; i++) {
+            queue.add("" + i);
+            String expected = "" + (i - size);
+            Assertions.assertEquals(expected, queue.element());
+            Assertions.assertEquals(expected, queue.remove());
+            Assertions.assertEquals(size, queue.size());
+        }
+
+        for (int i = 0; i < size; i++) {
+            queue.remove();
+        }
+        Assertions.assertEquals(0, queue.size());
+
+        try {
+            queue.remove();
+            Assertions.fail();
+        } catch (Exception ignored) {
+        }
+
+        try {
+            queue.element();
+            Assertions.fail();
+        } catch (Exception ignored) {
+        }
+    }
 }
