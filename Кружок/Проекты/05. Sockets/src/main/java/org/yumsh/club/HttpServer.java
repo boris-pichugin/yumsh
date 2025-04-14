@@ -3,6 +3,7 @@ package org.yumsh.club;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -67,7 +68,7 @@ public class HttpServer {
         String resourceName = getResourceName(methodLine);
         Path path = getResourcePath(resourceName);
         String contentType = getContentType(resourceName);
-        byte[] fileContent = transform(resourceName, Files.readAllBytes(path));
+        byte[] fileContent = transform(resourceName, Files.readAllBytes(path), Map.of());
 
         writeOk(out, contentType, fileContent);
     }
@@ -76,7 +77,6 @@ public class HttpServer {
         String resourceName = getResourceName(methodLine);
         Path path = getResourcePath(resourceName);
         String contentType = getContentType(resourceName);
-        byte[] fileContent = transform(resourceName, Files.readAllBytes(path));
 
         Map<String, String> headers = parseHeaders(br);
         if (headers == null) {
@@ -90,6 +90,9 @@ public class HttpServer {
         }
 
         Map<String, String> params = parseParams(postParams);
+        byte[] fileContent = transform(resourceName, Files.readAllBytes(path), params);
+
+        writeOk(out, contentType, fileContent);
     }
 
     private static Map<String, String> parseHeaders(BufferedReader br) throws IOException {
@@ -127,7 +130,22 @@ public class HttpServer {
     }
 
     private static Map<String, String> parseParams(char[] postParams) {
-        return null;
+        Map<String, String> params = new HashMap<>();
+        int keyStart = 0;
+        int valueStart = 0;
+        for (int i = 0; i <= postParams.length; i++) {
+            if (i == postParams.length || postParams[i] == '&') {
+                String key = new String(postParams, keyStart, valueStart - 1 - keyStart);
+                String value = new String(postParams, valueStart, i - valueStart);
+                String decodedValue = URLDecoder.decode(value, StandardCharsets.UTF_8);
+                params.put(key, decodedValue);
+                keyStart = i + 1;
+                valueStart = i + 1;
+            } else if (postParams[i] == '=') {
+                valueStart = i + 1;
+            }
+        }
+        return params;
     }
 
     private static String getResourceName(String methodLine) {
@@ -161,13 +179,16 @@ public class HttpServer {
         }
     }
 
-    private static byte[] transform(String resourceName, byte[] bytes) {
+    private static byte[] transform(String resourceName, byte[] bytes, Map<String, String> params) {
         if (!resourceName.endsWith(".html")) {
             return bytes;
         }
         String content = new String(bytes, StandardCharsets.UTF_8);
         String currentTimestamp = "%tF %<tT %<tz".formatted(System.currentTimeMillis());
         String newContent = content.replaceAll("\\$\\{CURRENT_DATE}", currentTimestamp);
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            newContent = newContent.replaceAll("\\$\\{" + entry.getKey() + "}", entry.getValue());
+        }
         return newContent.getBytes(StandardCharsets.UTF_8);
     }
 
