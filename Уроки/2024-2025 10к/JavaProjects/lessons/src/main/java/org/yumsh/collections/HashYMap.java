@@ -1,7 +1,7 @@
 package org.yumsh.collections;
 
 public class HashYMap implements YMap {
-    private int size;
+    private int size = 0;
     private YList[] table = new YList[16];
 
     @Override
@@ -23,6 +23,7 @@ public class HashYMap implements YMap {
         }
 
         // Ключ key - новый.
+        size += 1;
         if ((table.length >> 2) * 3 <= size) {
             extendTable();
         }
@@ -79,8 +80,7 @@ public class HashYMap implements YMap {
         table = newTable;
     }
 
-    private static class Entry {
-
+    private static final class Entry {
         private final Object key;
         private Object value;
 
