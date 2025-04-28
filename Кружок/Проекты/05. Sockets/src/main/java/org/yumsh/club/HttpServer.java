@@ -68,7 +68,11 @@ public class HttpServer {
         String resourceName = getResourceName(methodLine);
         Path path = getResourcePath(resourceName);
         String contentType = getContentType(resourceName);
-        byte[] fileContent = transform(resourceName, Files.readAllBytes(path), Map.of());
+        byte[] fileContent = transform(
+            resourceName,
+            Files.readAllBytes(path),
+            Map.of("message", "")
+        );
 
         writeOk(out, contentType, fileContent);
     }

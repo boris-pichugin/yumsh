@@ -6,25 +6,25 @@
     <link type="image/png" sizes="32x32" rel="icon" href="favicon-32x32.png">
 </head>
 <body>
-<h1>Привет, HTML!</h1>
-
-<a href="page1.html">Пример ссылки.</a>
-
-<p>Эта страничка была загружена в ${CURRENT_DATE}</p>
-
-<form action="page1.html" method="post">
-    <div>
-        <label for="p1">Первый параметр: </label>
-        <input name="p1" id="p1" value="Привет" />
-    </div>
-    <div>
-        <label for="p2">Второй параметр: </label>
-        <input name="p2" id="p2" value="Мир" />
-    </div>
-    <div>
-        <button>Отравить</button>
+<form action="/" method="post">
+    <div style="display: flex;">
+        <div>
+            <label for="message">Сообщение: &nbsp;</label>
+        </div>
+        <div style="flex:1;">
+            <input name="message" id="message" value="" style="width: 100%"/>
+        </div>
+        <div style="width:20px">
+        </div>
+        <div>
+            <button>Отравить</button>
+        </div>
     </div>
 </form>
+
+<div>
+     ${message}
+</div>
 
 </body>
 </html>
