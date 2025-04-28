@@ -1,4 +1,4 @@
-package org.yumsh.club;
+package org.yumsh.club.chat.http;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class HttpServer {
+public class HttpChatServer {
     private static final Path WWW_ROOT = Path.of("www");
 
     public static void main(String[] args) {

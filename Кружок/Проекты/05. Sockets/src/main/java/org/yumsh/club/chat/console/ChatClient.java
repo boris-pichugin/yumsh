@@ -1,4 +1,4 @@
-package org.yumsh.club;
+package org.yumsh.club.chat.console;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

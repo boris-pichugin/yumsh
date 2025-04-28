@@ -1,4 +1,4 @@
-package org.yumsh.club;
+package org.yumsh.club.chat.console;
 
 import java.io.*;
 import java.net.Socket;

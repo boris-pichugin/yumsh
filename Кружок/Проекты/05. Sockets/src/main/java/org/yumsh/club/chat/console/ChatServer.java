@@ -1,18 +1,19 @@
-package org.yumsh.club;
+package org.yumsh.club.chat.console;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public class EchoServer {
+public class ChatServer {
     public static void main(String[] args) {
         try (ServerSocket server = new ServerSocket(5333, 3)) {
+            ChatRoom chatRoom = new ChatRoom();
             int i = 0;
             while (true) {
                 Socket socket = server.accept();
                 Thread thread = new Thread(
-                    () -> handleClientSocket(socket),
+                    () -> handleClientSocket(socket, chatRoom),
                     "MyThread-" + (++i)
                 );
                 thread.setDaemon(true);
@@ -23,7 +24,7 @@ public class EchoServer {
         }
     }
 
-    private static void handleClientSocket(Socket socket) {
+    private static void handleClientSocket(Socket socket, final ChatRoom chatRoom) {
         try (socket) {
             InputStream in = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
@@ -35,39 +36,20 @@ public class EchoServer {
             if (clientName == null) {
                 return;
             }
-            sendPingMessages(writer, clientName);
+            ChatClient currentClient = new ChatClient(clientName, writer);
+            chatRoom.add(currentClient);
             while (true) {
                 String msg = br.readLine();
                 if (msg == null) {
+                    chatRoom.remove(currentClient);
                     break;
                 }
                 System.out.println(clientName + ": " + msg);
 
-                writer.write(clientName + ": " + msg + '\n');
-                writer.flush();
+                chatRoom.sendToAll(currentClient, msg);
             }
         } catch (final Exception e) {
             e.printStackTrace(System.err);
         }
-    }
-
-    private static void sendPingMessages(OutputStreamWriter writer, String clientName) {
-        Thread thread = new Thread(() -> {
-            try {
-                long sleep = 5_000L;
-                long startTime = System.currentTimeMillis();
-                while (true) {
-                    Thread.sleep(sleep);
-                    long duraton = System.currentTimeMillis() - startTime;
-                    String msg = "%s: Мы общаемся уже %d ms\n".formatted(clientName, duraton);
-                    System.out.print(msg);
-                    writer.write(msg);
-                    writer.flush();
-                }
-            } catch (Exception ignored) {
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
     }
 }
