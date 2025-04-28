@@ -68,11 +68,10 @@ public class HttpChatServer {
         String resourceName = getResourceName(methodLine);
         Path path = getResourcePath(resourceName);
         String contentType = getContentType(resourceName);
-        byte[] fileContent = transform(
-            resourceName,
-            Files.readAllBytes(path),
-            Map.of("message", "")
-        );
+        byte[] fileContent = Files.readAllBytes(path);
+        if (contentType.equals("text/html; charset=utf-8")) {
+            fileContent = resolveParams(fileContent, Map.of("message", ""));
+        }
 
         writeOk(out, contentType, fileContent);
     }
@@ -94,7 +93,11 @@ public class HttpChatServer {
         }
 
         Map<String, String> params = parseParams(postParams);
-        byte[] fileContent = transform(resourceName, Files.readAllBytes(path), params);
+
+        byte[] fileContent = Files.readAllBytes(path);
+        if (contentType.equals("text/html; charset=utf-8")) {
+            fileContent = resolveParams(fileContent, params);
+        }
 
         writeOk(out, contentType, fileContent);
     }
@@ -175,25 +178,19 @@ public class HttpChatServer {
     private static String getContentType(String resourceName) {
         if (resourceName.endsWith(".ico")) {
             return "image/x-icon";
-        }
-        if (resourceName.endsWith(".png")) {
+        } else if (resourceName.endsWith(".png")) {
             return "image/png";
         } else {
             return "text/html; charset=utf-8";
         }
     }
 
-    private static byte[] transform(String resourceName, byte[] bytes, Map<String, String> params) {
-        if (!resourceName.endsWith(".html")) {
-            return bytes;
-        }
-        String content = new String(bytes, StandardCharsets.UTF_8);
-        String currentTimestamp = "%tF %<tT %<tz".formatted(System.currentTimeMillis());
-        String newContent = content.replaceAll("\\$\\{CURRENT_DATE}", currentTimestamp);
+    private static byte[] resolveParams(byte[] fileContent, Map<String, String> params) {
+        String content = new String(fileContent, StandardCharsets.UTF_8);
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            newContent = newContent.replaceAll("\\$\\{" + entry.getKey() + "}", entry.getValue());
+            content = content.replaceAll("\\$\\{" + entry.getKey() + "}", entry.getValue());
         }
-        return newContent.getBytes(StandardCharsets.UTF_8);
+        return content.getBytes(StandardCharsets.UTF_8);
     }
 
     private static void writeError(OutputStream out, String errorStatus) throws IOException {
