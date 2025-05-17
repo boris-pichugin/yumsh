@@ -20,6 +20,7 @@ public class YMapTest {
         int n = 200;
         for (int i = 0; i < n; i++) {
             map.put("" + i, "" + i);
+            map.put("" + i, "" + i);
             Assertions.assertEquals(2 + i, map.size());
         }
     }
@@ -44,6 +45,9 @@ public class YMapTest {
                 map.put(key, value);
                 Assertions.assertEquals(value, map.get(key));
                 Assertions.assertEquals(i + 1, map.size());
+                map.put(key, value);
+                Assertions.assertEquals(value, map.get(key));
+                Assertions.assertEquals(i + 1, map.size());
             }
             for (int i = 0; i < n; i++) {
                 String key = "k" + i;
@@ -52,6 +56,9 @@ public class YMapTest {
             }
             for (int i = 0; i < n; i++) {
                 String key = "k" + ((i + 7) % n);
+                map.remove(key);
+                Assertions.assertNull(map.get(key));
+                Assertions.assertEquals(n - i - 1, map.size());
                 map.remove(key);
                 Assertions.assertNull(map.get(key));
                 Assertions.assertEquals(n - i - 1, map.size());
