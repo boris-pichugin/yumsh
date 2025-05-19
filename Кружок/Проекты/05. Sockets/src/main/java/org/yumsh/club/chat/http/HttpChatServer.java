@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -17,11 +18,12 @@ public class HttpChatServer {
 
     public static void main(String[] args) {
         try (ServerSocket server = new ServerSocket(5333, 3)) {
+            ChatRoom chatRoom = new ChatRoom();
             int i = 0;
             while (true) {
                 Socket socket = server.accept();
                 Thread thread = new Thread(
-                    () -> handleClientSocket(socket),
+                    () -> handleClientSocket(socket, chatRoom),
                     "MyThread-" + (++i)
                 );
                 thread.setDaemon(true);
@@ -32,11 +34,12 @@ public class HttpChatServer {
         }
     }
 
-    private static void handleClientSocket(Socket socket) {
+    private static void handleClientSocket(Socket socket, ChatRoom chatRoom) {
         try (socket) {
             InputStream in = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(in, StandardCharsets.US_ASCII);
             BufferedReader br = new BufferedReader(reader);
+
             OutputStream out = socket.getOutputStream();
 
             String methodLine = br.readLine();
@@ -50,9 +53,9 @@ public class HttpChatServer {
 
             try {
                 if (methodLine.startsWith("GET ")) {
-                    handleGetRequest(methodLine, out);
+                    handleGetRequest(chatRoom, methodLine, out);
                 } else if (methodLine.startsWith("POST ")) {
-                    handlePostRequest(methodLine, br, out);
+                    handlePostRequest(chatRoom, methodLine, br, out);
                 } else {
                     writeError(out, "400 Bad Request");
                 }
@@ -64,19 +67,20 @@ public class HttpChatServer {
         }
     }
 
-    private static void handleGetRequest(String methodLine, OutputStream out) throws IOException {
+    private static void handleGetRequest(ChatRoom chatRoom, String methodLine, OutputStream out) throws IOException {
         String resourceName = getResourceName(methodLine);
         Path path = getResourcePath(resourceName);
         String contentType = getContentType(resourceName);
         byte[] fileContent = Files.readAllBytes(path);
         if (contentType.equals("text/html; charset=utf-8")) {
-            fileContent = resolveParams(fileContent, Map.of("message", ""));
+            Message[] messages = chatRoom.getMessages();
+            fileContent = resolveParams(fileContent, Map.of("MESSAGES", formatInHtml(messages)));
         }
 
         writeOk(out, contentType, fileContent);
     }
 
-    private static void handlePostRequest(String methodLine, BufferedReader br, OutputStream out) throws IOException {
+    private static void handlePostRequest(ChatRoom chatRoom, String methodLine, BufferedReader br, OutputStream out) throws IOException {
         String resourceName = getResourceName(methodLine);
         Path path = getResourcePath(resourceName);
         String contentType = getContentType(resourceName);
@@ -93,13 +97,31 @@ public class HttpChatServer {
         }
 
         Map<String, String> params = parseParams(postParams);
+        String message = params.get("message");
+        if (message != null) {
+            chatRoom.addMessage(message);
+        }
 
         byte[] fileContent = Files.readAllBytes(path);
         if (contentType.equals("text/html; charset=utf-8")) {
-            fileContent = resolveParams(fileContent, params);
+            Message[] messages = chatRoom.getMessages();
+            fileContent = resolveParams(fileContent, Map.of("MESSAGES", formatInHtml(messages)));
         }
 
         writeOk(out, contentType, fileContent);
+    }
+
+    private static String formatInHtml(Message[] messages) {
+        final Formatter formatter = new Formatter();
+        for (int i = messages.length - 1; i >= 0; i--) {
+            formatter.format(
+                Locale.ROOT,
+                "%tY-%<tm-%<td %<tH:%<tM:%<tS %s</br>\n",
+                messages[i].sendTime,
+                messages[i].content
+            );
+        }
+        return formatter.toString();
     }
 
     private static Map<String, String> parseHeaders(BufferedReader br) throws IOException {
