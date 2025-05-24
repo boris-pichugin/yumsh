@@ -36,12 +36,26 @@ public class HashYMap implements YMap {
 
     @Override
     public Object get(Object key) {
-        return null;
+        Entry entry = getEntry(key);
+        return entry == null ? null : entry.value;
     }
 
     @Override
     public void remove(Object key) {
-
+        int i = key.hashCode() % table.length;
+        YList entries = table[i];
+        if (entries == null) {
+            return;
+        }
+        int size = entries.size();
+        for (int j = 0; j < size; j++) {
+            Entry entry = (Entry) entries.get(j);
+            if (entry.key.equals(key)) {
+                entries.remove(j);
+                this.size -= 1;
+                return;
+            }
+        }
     }
 
     private Entry getEntry(Object key) {
