@@ -1,8 +1,8 @@
 package org.yumsh.collections;
 
 public class NaiveYMap implements YMap {
-    YList keys = new ArrayYList();
-    YList values = new ArrayYList();
+    private final YList keys = new ArrayYList();
+    private final YList values = new ArrayYList();
 
     @Override
     public int size() {
