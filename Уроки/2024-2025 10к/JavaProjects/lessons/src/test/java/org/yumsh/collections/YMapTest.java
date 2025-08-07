@@ -8,7 +8,7 @@ public class YMapTest {
     private static YMap createMap() {
 //        return new DirectArrayYMap();
 //        return new ArrayYMap();
-        return new TreeYMap();
+        return new AvlTreeYMap();
     }
 
     @Test
