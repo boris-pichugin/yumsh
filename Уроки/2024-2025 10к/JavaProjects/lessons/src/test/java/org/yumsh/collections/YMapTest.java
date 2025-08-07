@@ -22,6 +22,7 @@ public class YMapTest {
             map.put("" + i, "" + i);
             map.put("" + i, "" + i);
             Assertions.assertEquals(2 + i, map.size());
+            testBalance(map);
         }
     }
 
@@ -43,9 +44,11 @@ public class YMapTest {
                 String key = "k" + i;
                 String value = "v" + k + "." + i;
                 map.put(key, value);
+                testBalance(map);
                 Assertions.assertEquals(value, map.get(key));
                 Assertions.assertEquals(i + 1, map.size());
                 map.put(key, value);
+                testBalance(map);
                 Assertions.assertEquals(value, map.get(key));
                 Assertions.assertEquals(i + 1, map.size());
             }
@@ -57,12 +60,20 @@ public class YMapTest {
             for (int i = 0; i < n; i++) {
                 String key = "k" + ((i + 7) % n);
                 map.remove(key);
+                testBalance(map);
                 Assertions.assertNull(map.get(key));
                 Assertions.assertEquals(n - i - 1, map.size());
                 map.remove(key);
+                testBalance(map);
                 Assertions.assertNull(map.get(key));
                 Assertions.assertEquals(n - i - 1, map.size());
             }
+        }
+    }
+
+    private static void testBalance(YMap map) {
+        if (map instanceof AvlTreeYMap avlTreeYMap) {
+            avlTreeYMap.testBalance();
         }
     }
 }

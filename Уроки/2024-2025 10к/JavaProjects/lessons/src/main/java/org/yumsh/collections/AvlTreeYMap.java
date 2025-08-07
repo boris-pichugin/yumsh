@@ -157,6 +157,22 @@ public class AvlTreeYMap implements YMap {
         return key1.toString().compareTo(key2.toString());
     }
 
+    public void testBalance() {
+        testBalance(root);
+    }
+
+    private static void testBalance(Node node) {
+        if (node == null) {
+            return;
+        }
+        int balance = h(node.left) - h(node.right);
+        if (balance < -1 || 1 < balance) {
+            throw new IllegalStateException("Node " + node.key + " is disbalanced.");
+        }
+        testBalance(node.left);
+        testBalance(node.right);
+    }
+
     private static final class Node {
         public final Object key;
         public Object value;
