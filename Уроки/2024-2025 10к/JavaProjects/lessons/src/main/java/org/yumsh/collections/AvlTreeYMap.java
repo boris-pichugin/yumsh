@@ -35,7 +35,7 @@ public class AvlTreeYMap implements YMap {
             node.left = put(node.left, key, value);
         }
 
-        return checkBalance(node);
+        return balance(node);
     }
 
     @Override
@@ -73,36 +73,50 @@ public class AvlTreeYMap implements YMap {
         } else {
             node.left = remove(node.left, key);
         }
-        return checkBalance(node);
+        return balance(node);
     }
 
-    private Node removeNode(Node node) {
+    private static Node removeNode(Node node) {
         if (node.left == null) {
             return node.right;
         }
         if (node.right == null) {
             return node.left;
         }
-        // TODO Проверить какое поддерево длиннея и брать донора из него
-        node.left = removeNodeLeft(node.left, node);
+        if (node.left.h >= node.right.h) {
+            node.left = removeNodeLeft(node.left, node);
+        } else {
+            node.right = removeNodeRight(node.right, node);
+        }
         return node;
     }
 
-    private Node removeNodeLeft(Node current, Node node) {
+    private static Node removeNodeLeft(Node current, Node node) {
         if (current.right == null) {
             node.key = current.key;
             node.value = current.value;
             return current.left;
         }
         current.right = removeNodeLeft(current.right, node);
-        return checkBalance(current);
+        return balance(current);
     }
 
+    private static Node removeNodeRight(Node current, Node node) {
+        if (current.left == null) {
+            node.key = current.key;
+            node.value = current.value;
+            return current.right;
+        }
+        current.left = removeNodeRight(current.left, node);
+        return balance(current);
+    }
+
+    @SuppressWarnings({"MethodMayBeStatic", "WeakerAccess"})
     protected int compareTo(Object key1, Object key2) {
         return key1.toString().compareTo(key2.toString());
     }
 
-    public void testBalance() {
+    void testBalance() {
         testBalance(root);
     }
 
@@ -118,7 +132,7 @@ public class AvlTreeYMap implements YMap {
         testBalance(node.right);
     }
 
-    private static Node checkBalance(Node node) {
+    private static Node balance(Node node) {
         if (node == null) {
             return null;
         }
@@ -136,7 +150,7 @@ public class AvlTreeYMap implements YMap {
             node.updateHeight();
         } else {
             Node b = node.right;
-            if (h(b.right) >= h(b.left)) {
+            if (h(b.left) <= h(b.right)) {
                 node = rotateLeftSmall(node);
             } else {
                 node = rotateLeftBig(node);
@@ -197,18 +211,18 @@ public class AvlTreeYMap implements YMap {
     }
 
     private static final class Node {
-        public Object key;
-        public Object value;
-        public Node left = null;
-        public Node right = null;
-        public int h = 1;
+        Object key;
+        Object value;
+        Node left = null;
+        Node right = null;
+        int h = 1;
 
-        public Node(Object key, Object value) {
+        Node(Object key, Object value) {
             this.key = key;
             this.value = value;
         }
 
-        public void updateHeight() {
+        void updateHeight() {
             h = Math.max(1 + h(left), 1 + h(right));
         }
     }
