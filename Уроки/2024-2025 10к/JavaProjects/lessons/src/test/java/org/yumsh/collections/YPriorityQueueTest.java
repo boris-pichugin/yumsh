@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class YPriorityQueueTest {
 
     private static YPriorityQueue createPriorityQueue() {
-        return new YPriorityQueueImpl();
+        return new HeapYPriorityQueue();
     }
 
     @Test
