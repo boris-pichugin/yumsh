@@ -4,6 +4,7 @@ public interface YDeque extends YStack, YQueue {
     /**
      * @return число элементов в очереди.
      */
+    @Override
     int size();
 
     /**
