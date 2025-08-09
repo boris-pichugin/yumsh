@@ -32,4 +32,14 @@ public interface YPriorityQueue {
      * @return первый элемент очереди.
      */
     int elementSmallest();
+
+    /**
+     * @param value новое значение, которое заменит самое маленькое.
+     */
+    void replaceSmallest(int value);
+
+    /**
+     * @return массив всех добавленных значений.
+     */
+    int[] getValues();
 }

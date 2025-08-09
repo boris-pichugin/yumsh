@@ -40,6 +40,19 @@ public class HeapYPriorityQueue implements YPriorityQueue {
         return heap[0];
     }
 
+    @Override
+    public void replaceSmallest(int value) {
+        if (size == 0) {
+            throw new IllegalStateException("Priority queue is empty.");
+        }
+        siftDown(heap, size, value);
+    }
+
+    @Override
+    public int[] getValues() {
+        return Arrays.copyOf(heap, size);
+    }
+
     private static void siftUp(int[] heap, int i, int value) {
         while (i > 0) {
             int j = (i - 1) >>> 1;

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class TopCollectorTest {
 
     private static TopCollector createTopCollector(int topSize) {
-        return new MyTopCollector(topSize);
+        return new HeapTopCollector(topSize);
     }
 
     @Test
