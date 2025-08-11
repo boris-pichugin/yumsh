@@ -78,7 +78,7 @@ public final class BitOperations {
         return x ^ (x >>> 1L);
     }
 
-    public static long reverse(long x) {
+    public static long reverse1(long x) {
         long y = 0L;
         for (int i = 0; i < 64; i++) {
             if ((x & pow2(i)) != 0L) {
@@ -97,11 +97,12 @@ public final class BitOperations {
         return x;
     }
 
-    public static void main(String[] args) {
-        long a = 0b10101000;
-        System.out.println(Long.toBinaryString(lowBit(a)));
-        if (-a == ~a + 1L) {
-            System.out.println("Равно!!!");
+    public static long reverse3(long x) {
+        for (int i = 0; i < 32; i++) {
+            long a = ((x >>> i) & 1L) << (63 - i) | (((x >>> (63 - i)) & 1L) << i);
+            x &= ~((1L << i) | (1L << (63 - i)));
+            x |= a;
         }
+        return x;
     }
 }
