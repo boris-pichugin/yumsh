@@ -183,4 +183,32 @@ public final class BitOperations {
         long ly = Double.doubleToLongBits(y);
         return (int) (ly >>> 52) - 1023;
     }
+
+    /**
+     * @param x любое число.
+     * @return количество единичных битов данного числа.
+     */
+    public static int countBits0(long x) {
+        int count = 0;
+        while (x != 0L) {
+            count += 1;
+            long y = x & (-x);
+            x &= ~y;
+        }
+        return count;
+    }
+
+    /**
+     * @param x любое число.
+     * @return количество единичных битов данного числа.
+     */
+    public static int countBits1(long x) {
+        x = (x & 0x5555555555555555L) + ((x >>> 1) & 0x5555555555555555L);
+        x = (x & 0x3333333333333333L) + ((x >>> 2) & 0x3333333333333333L);
+        x = (x & 0x0F0F0F0F0F0F0F0FL) + ((x >>> 4) & 0x0F0F0F0F0F0F0F0FL);
+        x = (x & 0x00FF00FF00FF00FFL) + ((x >>> 8) & 0x00FF00FF00FF00FFL);
+        x = (x & 0x0000FFFF0000FFFFL) + ((x >>> 16) & 0x0000FFFF0000FFFFL);
+        x = (x & 0x00000000FFFFFFFFL) + ((x >>> 32) & 0x00000000FFFFFFFFL);
+        return (int) (x & 0xFFL);
+    }
 }

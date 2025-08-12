@@ -36,4 +36,23 @@ public class BitOperationsTest {
             Assertions.assertEquals(r1, r2);
         }
     }
+
+    @Test
+    public void testCountBits() {
+        Assertions.assertEquals(
+            BitOperations.countBits0(0L),
+            BitOperations.countBits1(0L)
+        );
+        Assertions.assertEquals(
+            BitOperations.countBits0(1L << 63),
+            BitOperations.countBits1(1L << 63)
+        );
+        Random rnd = new Random(42);
+        for (int k = 0; k < 1000; k++) {
+            long x = rnd.nextLong();
+            long r1 = BitOperations.countBits0(x);
+            long r2 = BitOperations.countBits1(x);
+            Assertions.assertEquals(r1, r2);
+        }
+    }
 }

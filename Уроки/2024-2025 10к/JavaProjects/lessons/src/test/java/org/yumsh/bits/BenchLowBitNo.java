@@ -2,9 +2,9 @@ package org.yumsh.bits;
 
 import java.util.Random;
 
-public final class Bench {
+public final class BenchLowBitNo {
 
-    private Bench() {
+    private BenchLowBitNo() {
     }
 
     public static void main(String[] args) {
