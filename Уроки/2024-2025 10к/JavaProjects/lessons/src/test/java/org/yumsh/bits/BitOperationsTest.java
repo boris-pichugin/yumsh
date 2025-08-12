@@ -17,4 +17,15 @@ public class BitOperationsTest {
             Assertions.assertEquals(r1, r3);
         }
     }
+
+    @Test
+    public void testLowBitNo() {
+        Random rnd = new Random(42);
+        for (int k = 0; k < 1000; k++) {
+            long x = rnd.nextLong();
+            long r1 = BitOperations.lowBitNo0(x);
+            long r2 = BitOperations.lowBitNo1(x);
+            Assertions.assertEquals(r1, r2);
+        }
+    }
 }

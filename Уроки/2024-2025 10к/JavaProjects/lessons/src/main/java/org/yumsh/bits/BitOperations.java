@@ -105,4 +105,30 @@ public final class BitOperations {
         }
         return x;
     }
+
+    /**
+     * @param x любое число.
+     * @return номер младшего бита.
+     */
+    public static int lowBitNo0(long x) {
+        for (int i = 0; i < 64; i++) {
+            if ((x & (1L << i)) != 0) {
+                return i;
+            }
+        }
+        return 64;
+    }
+
+    /**
+     * @param x любое число.
+     * @return номер младшего бита.
+     */
+    public static int lowBitNo1(long x) {
+        for (int i = 0; i < 64; i++) {
+            if ((x & (1L << i)) != 0) {
+                return i;
+            }
+        }
+        return 64;
+    }
 }
