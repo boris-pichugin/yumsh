@@ -22,13 +22,17 @@ public class BitOperationsTest {
     public void testLowBitNo() {
         Assertions.assertEquals(
             BitOperations.lowBitNo0(0L),
-            BitOperations.lowBitNo1(0L)
+            BitOperations.lowBitNo3(0L)
+        );
+        Assertions.assertEquals(
+            BitOperations.lowBitNo0(1L << 63),
+            BitOperations.lowBitNo3(1L << 63)
         );
         Random rnd = new Random(42);
         for (int k = 0; k < 1000; k++) {
             long x = rnd.nextLong();
             long r1 = BitOperations.lowBitNo0(x);
-            long r2 = BitOperations.lowBitNo1(x);
+            long r2 = BitOperations.lowBitNo3(x);
             Assertions.assertEquals(r1, r2);
         }
     }

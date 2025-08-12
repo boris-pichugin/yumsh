@@ -149,4 +149,38 @@ public final class BitOperations {
         }
         return p;
     }
+
+    private static final int[] LOW_BIT_NO = new int[67 + 67];
+
+    static {
+        LOW_BIT_NO[67] = 64;
+        for (int i = 0; i < 64; i++) {
+            LOW_BIT_NO[67 + (int) ((1L << i) % 67L)] = i;
+        }
+    }
+
+    /**
+     * @param x любое число.
+     * @return номер младшего бита.
+     */
+    public static int lowBitNo2(long x) {
+        x = x & (-x);
+        return LOW_BIT_NO[67 + (int) (x % 67)];
+    }
+
+    /**
+     * @param x любое число.
+     * @return номер младшего бита.
+     */
+    public static int lowBitNo3(long x) {
+        if (x == 0L) {
+            return 64;
+        }
+        if (x == (1L << 63)) {
+            return 63;
+        }
+        double y = (double) (x & (-x));
+        long ly = Double.doubleToLongBits(y);
+        return (int) (ly >>> 52) - 1023;
+    }
 }
