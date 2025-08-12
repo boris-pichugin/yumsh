@@ -20,6 +20,10 @@ public class BitOperationsTest {
 
     @Test
     public void testLowBitNo() {
+        Assertions.assertEquals(
+            BitOperations.lowBitNo0(0L),
+            BitOperations.lowBitNo1(0L)
+        );
         Random rnd = new Random(42);
         for (int k = 0; k < 1000; k++) {
             long x = rnd.nextLong();

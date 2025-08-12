@@ -124,11 +124,29 @@ public final class BitOperations {
      * @return номер младшего бита.
      */
     public static int lowBitNo1(long x) {
-        for (int i = 0; i < 64; i++) {
-            if ((x & (1L << i)) != 0) {
-                return i;
-            }
+        if (x == 0) {
+            return 64;
         }
-        return 64;
+        int p = 0;
+        x = x & (-x);
+        if ((x & 0x00000000FFFFFFFFL) == 0) {
+            p += 32;
+        }
+        if ((x & 0x0000FFFF0000FFFFL) == 0) {
+            p += 16;
+        }
+        if ((x & 0x00FF00FF00FF00FFL) == 0) {
+            p += 8;
+        }
+        if ((x & 0x0F0F0F0F0F0F0F0FL) == 0) {
+            p += 4;
+        }
+        if ((x & 0x3333333333333333L) == 0) {
+            p += 2;
+        }
+        if ((x & 0x5555555555555555L) == 0) {
+            p += 1;
+        }
+        return p;
     }
 }
