@@ -20,9 +20,22 @@ public class InvertedIndexImplTest {
             for (int j = 0; j < 10; j++) {
                 String term1 = generateTerm(rnd, termsCount);
                 String term2 = generateTerm(rnd, termsCount);
+                String term3 = generateTerm(rnd, termsCount);
+                String term4 = generateTerm(rnd, termsCount);
+                String term5 = generateTerm(rnd, termsCount);
 
                 test(documents, doc -> doc.contains(term1), index.get(term1));
                 test(documents, doc -> doc.contains(term1) && doc.contains(term2), index.getAnd(term1, term2));
+                test(documents, doc -> doc.contains(term1) || doc.contains(term2), index.getOr(term1, term2));
+                test(
+                    documents,
+                    doc -> doc.contains(term1)
+                        && doc.contains(term2)
+                        && doc.contains(term3)
+                        && doc.contains(term4)
+                        && doc.contains(term5),
+                    index.getAnd(term1, term2, term3, term4, term5)
+                );
             }
         }
     }
