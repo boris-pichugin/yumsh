@@ -36,6 +36,27 @@ public class InvertedIndexImplTest {
                         && doc.contains(term5),
                     index.getAnd(term1, term2, term3, term4, term5)
                 );
+                test(
+                    documents,
+                    doc -> doc.contains(term1)
+                        || doc.contains(term2)
+                        || doc.contains(term3)
+                        || doc.contains(term4)
+                        || doc.contains(term5),
+                    index.getOr(term1, term2, term3, term4, term5)
+                );
+                test(
+                    documents,
+                    doc -> {
+                        int count = (doc.contains(term1) ? 1 : 0)
+                            + (doc.contains(term2) ? 1 : 0)
+                            + (doc.contains(term3) ? 1 : 0)
+                            + (doc.contains(term4) ? 1 : 0)
+                            + (doc.contains(term5) ? 1 : 0);
+                        return 3 <= count;
+                    },
+                    index.getRelaxedAnd(3, term1, term2, term3, term4, term5)
+                );
             }
         }
     }
