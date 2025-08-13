@@ -74,7 +74,7 @@ public class InvertedIndexImplTest {
         }
     }
 
-    private InvertedIndexImpl createIndex(Set<Set<String>> documents) {
+    private static InvertedIndexImpl createIndex(Set<Set<String>> documents) {
         InvertedIndexImpl index = new InvertedIndexImpl();
         for (Set<String> document : documents) {
             String[] terms = document.toArray(String[]::new);
@@ -86,7 +86,8 @@ public class InvertedIndexImplTest {
         return index;
     }
 
-    public static Set<Set<String>> generateDocuments(Random rnd, int termsCount, int docCount) {
+    @SuppressWarnings("SameParameterValue")
+    private static Set<Set<String>> generateDocuments(Random rnd, int termsCount, int docCount) {
         Set<Set<String>> documents = new HashSet<>();
         for (int i = 0; i < docCount; i++) {
             documents.add(generateDocument(rnd, termsCount));
