@@ -2,6 +2,9 @@ package org.yumsh.invindex;
 
 /// Обратный индекс.
 public interface InvertedIndex {
+    /// @return число добавленных документов.
+    int size();
+
     /// Добавить документ в индекс.
     ///
     /// @param docTerms список термов документа.
