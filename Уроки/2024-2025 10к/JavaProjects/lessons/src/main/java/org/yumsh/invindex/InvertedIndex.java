@@ -13,28 +13,28 @@ public interface InvertedIndex {
 
     /// @param term некоторый терм.
     /// @return список документов, в которых содержится данный терм.
-    int[] get(String term);
+    PostingList get(String term);
 
     /// @param term1 некоторый терм.
     /// @param term2 второй терм.
     /// @return список документов, в которых содержатся оба терма.
-    int[] getAnd(String term1, String term2);
+    PostingList getAnd(String term1, String term2);
 
     /// @param term1 первый терм.
     /// @param term2 второй терм.
     /// @return список документов, в которых содержится хотя бы один из данных термов.
-    int[] getOr(String term1, String term2);
+    PostingList getOr(String term1, String term2);
 
     /// @param terms список термов.
     /// @return список документов, в которых содержатся все термы.
-    int[] getAnd(String... terms);
+    PostingList getAnd(String... terms);
 
     /// @param terms список термов.
     /// @return список документов, в которых содержится хотя бы один из данных термов.
-    int[] getOr(String... terms);
+    PostingList getOr(String... terms);
 
     /// @param terms          список термов.
     /// @param minShouldMatch минимальное число термов, в документе.
     /// @return список документов, в которых содержится не менее, чем `minShouldMatch` из данных термов.
-    int[] getRelaxedAnd(int minShouldMatch, String... terms);
+    PostingList getRelaxedAnd(int minShouldMatch, String... terms);
 }
