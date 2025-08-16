@@ -3,15 +3,21 @@ package org.yumsh.invindex;
 import java.util.Arrays;
 
 public class PostingList {
-    private int[] docIds = new int[16];
-    private int size = 0;
+    private int[] docIds;
+    private int size;
 
     public PostingList() {
+        docIds = new int[16];
+        size = 0;
     }
 
     private PostingList(PostingList original) {
         docIds = Arrays.copyOf(original.docIds, original.size);
         size = original.size;
+    }
+
+    public PostingList copy() {
+        return new PostingList(this);
     }
 
     public int size() {
@@ -26,10 +32,6 @@ public class PostingList {
             docIds = Arrays.copyOf(docIds, size * 2);
         }
         docIds[size++] = docId;
-    }
-
-    public PostingList copy() {
-        return new PostingList(this);
     }
 
     public PostingListIterator iterator() {

@@ -24,8 +24,7 @@ public class InvertedIndexImpl implements InvertedIndex {
 
     @Override
     public PostingList get(String term) {
-        PostingList postingList = postingLists.get(term);
-        return copy(postingList);
+        return copy(postingLists.get(term));
     }
 
     @Override
@@ -39,68 +38,60 @@ public class InvertedIndexImpl implements InvertedIndex {
         }
         PostingListIterator i = postingList1.iterator();
         PostingListIterator j = postingList2.iterator();
-        while (true) {
-            int docId1 = i.docId();
-            if (docId1 == Integer.MAX_VALUE) {
-                return andPostingList;
-            }
-            int docId2 = j.docId();
-            if (docId2 == Integer.MAX_VALUE) {
-                return andPostingList;
-            }
+        int docId1 = i.next();
+        int docId2 = j.next();
+        while (docId1 < Integer.MAX_VALUE && docId2 < Integer.MAX_VALUE) {
             if (docId1 < docId2) {
-                i.advance(docId2);
+                docId1 = i.advance(docId2);
             } else if (docId2 < docId1) {
-                j.advance(docId1);
+                docId2 = j.advance(docId1);
             } else {
                 andPostingList.add(docId1);
-                i.next();
-                j.next();
+                docId1 = i.next();
+                docId2 = j.next();
             }
         }
+        return andPostingList;
     }
 
     @Override
     public PostingList getOr(String term1, String term2) {
         PostingList postingList1 = postingLists.get(term1);
         PostingList postingList2 = postingLists.get(term2);
-        if (postingList1 == null || postingList1 == postingList2) {
+        if (postingList1 == null) {
             return copy(postingList2);
         }
         if (postingList2 == null) {
             return copy(postingList1);
         }
+        if (postingList1 == postingList2) {
+            return copy(postingList1);
+        }
         PostingList orPostingList = new PostingList();
         PostingListIterator i = postingList1.iterator();
         PostingListIterator j = postingList2.iterator();
-        while (true) {
-            int docId1 = i.docId();
-            int docId2 = j.docId();
+        int docId1 = i.next();
+        int docId2 = j.next();
+        while (docId1 < Integer.MAX_VALUE && docId2 < Integer.MAX_VALUE) {
             if (docId1 < docId2) {
                 orPostingList.add(docId1);
-                if (i.next() == Integer.MAX_VALUE) {
-                    break;
-                }
+                docId1 = i.next();
             } else if (docId2 < docId1) {
                 orPostingList.add(docId2);
-                if (j.next() == Integer.MAX_VALUE) {
-                    break;
-                }
+                docId2 = j.next();
             } else {
                 orPostingList.add(docId1);
-                if (i.next() == Integer.MAX_VALUE) {
-                    break;
-                }
-                if (j.next() == Integer.MAX_VALUE) {
-                    break;
-                }
+                docId1 = i.next();
+                docId2 = j.next();
             }
         }
-        while (i.hasNext()) {
-            orPostingList.add(i.next());
+        while (docId1 < Integer.MAX_VALUE) {
+            orPostingList.add(docId1);
+            docId1 = i.next();
         }
-        while (j.hasNext()) {
-            orPostingList.add(j.next());
+        while (docId2 < Integer.MAX_VALUE) {
+            orPostingList.add(docId2);
+            docId2 = j.next();
         }
         return orPostingList;
     }

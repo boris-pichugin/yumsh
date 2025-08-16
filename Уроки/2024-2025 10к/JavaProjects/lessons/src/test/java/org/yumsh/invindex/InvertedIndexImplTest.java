@@ -64,13 +64,13 @@ public class InvertedIndexImplTest {
     private static void test(Set<Set<String>> documents, Predicate<Set<String>> predicate, PostingList docIds) {
         int nextDocId = 0;
         PostingListIterator iterator = docIds.iterator();
+        int lastDocId = -1;
         for (Set<String> document : documents) {
             int docId = nextDocId++;
             if (predicate.test(document)) {
-                Assertions.assertEquals(docId, iterator.docId());
-                iterator.next();
+                Assertions.assertEquals(docId, lastDocId = iterator.next());
             } else {
-                Assertions.assertNotEquals(docId, iterator.docId());
+                Assertions.assertNotEquals(docId, lastDocId);
             }
         }
     }
