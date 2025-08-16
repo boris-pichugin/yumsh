@@ -1,7 +1,11 @@
 package org.yumsh.invindex;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class InvertedIndexImpl implements InvertedIndex {
     private final Map<String, PostingList> postingLists = new HashMap<>();
@@ -98,61 +102,56 @@ public class InvertedIndexImpl implements InvertedIndex {
 
     @Override
     public PostingList getAnd(String... terms) {
-//        if (terms.length == 0) {
-//            return new int[0];
-//        }
-//        Set<List<Integer>> andPostingListSet = new HashSet<>();
-//        for (String term : terms) {
-//            PostingList postingList = postingLists.get(term);
-//            if (postingList != null) {
-//                andPostingListSet.add(postingList);
-//            } else {
-//                return new int[0];
-//            }
-//        }
-//        if (andPostingListSet.size() == 1) {
-//            return toArray(andPostingListSet.iterator().next());
-//        }
-//        List<List<Integer>> andPostingLists = new ArrayList<>(andPostingListSet);
-//        andPostingLists.sort(Comparator.comparingInt(List::size));
-//
-//        PostingList pos = new int[andPostingLists.size()];
-//
-//        PostingList result = new ArrayList<>();
-//
-//        while (true) {
-//            int minIdx = -1;
-//            int minDocId = Integer.MAX_VALUE;
-//            int maxDocId = -1;
-//            for (int i = 0; i < pos.length; i++) {
-//                PostingList postingList = andPostingLists.get(i);
-//                int p = pos[i];
-//                if (postingList.size() <= p) {
-//                    return toArray(result);
-//                }
-//                int docId = postingList.get(p);
-//                if (docId < minDocId) {
-//                    minIdx = i;
-//                    minDocId = docId;
-//                }
-//                if (maxDocId < docId) {
-//                    maxDocId = docId;
-//                }
-//            }
-//
-//            if (minDocId < maxDocId) {
-//                PostingList postingList = andPostingLists.get(minIdx);
-//                int i = pos[minIdx] + 1;
-//                while (i < postingList.size() && postingList.get(i) < maxDocId) {
-//                    i += 1;
-//                }
-//                pos[minIdx] = i;
-//            } else {
-//                result.add(minDocId);
-//                pos[0] += 1;
-//            }
-//        }
-        return new PostingList();
+        if (terms.length == 0) {
+            return new PostingList();
+        }
+        Set<PostingList> andPostingListSet = new HashSet<>();
+        for (String term : terms) {
+            PostingList postingList = postingLists.get(term);
+            if (postingList != null) {
+                andPostingListSet.add(postingList);
+            } else {
+                return new PostingList();
+            }
+        }
+        if (andPostingListSet.size() == 1) {
+            return andPostingListSet.iterator().next().copy();
+        }
+        PostingList[] andPostingLists = andPostingListSet.toArray(PostingList[]::new);
+        Arrays.sort(andPostingLists, Comparator.comparingInt(PostingList::size));
+
+        PostingListIterator[] iterators = new PostingListIterator[andPostingLists.length];
+        for (int i = 0; i < andPostingLists.length; i++) {
+            iterators[i] = andPostingLists[i].iterator();
+            iterators[i].next();
+        }
+        PostingList result = new PostingList();
+
+        while (true) {
+            PostingListIterator outsider = null;
+            int minDocId = Integer.MAX_VALUE;
+            int maxDocId = -1;
+            for (PostingListIterator iterator : iterators) {
+                int docId = iterator.docId();
+                if (docId == Integer.MAX_VALUE) {
+                    return result;
+                }
+                if (docId < minDocId) {
+                    outsider = iterator;
+                    minDocId = docId;
+                }
+                if (maxDocId < docId) {
+                    maxDocId = docId;
+                }
+            }
+
+            if (minDocId < maxDocId) {
+                outsider.advance(maxDocId);
+            } else {
+                result.add(minDocId);
+                iterators[0].next();
+            }
+        }
     }
 
     @Override

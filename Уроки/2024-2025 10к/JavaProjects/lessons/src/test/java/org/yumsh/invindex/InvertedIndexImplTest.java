@@ -27,15 +27,15 @@ public class InvertedIndexImplTest {
                 test(documents, doc -> doc.contains(term1), index.get(term1));
                 test(documents, doc -> doc.contains(term1) && doc.contains(term2), index.getAnd(term1, term2));
                 test(documents, doc -> doc.contains(term1) || doc.contains(term2), index.getOr(term1, term2));
-//                test(
-//                    documents,
-//                    doc -> doc.contains(term1)
-//                        && doc.contains(term2)
-//                        && doc.contains(term3)
-//                        && doc.contains(term4)
-//                        && doc.contains(term5),
-//                    index.getAnd(term1, term2, term3, term4, term5)
-//                );
+                test(
+                    documents,
+                    doc -> doc.contains(term1)
+                        && doc.contains(term2)
+                        && doc.contains(term3)
+                        && doc.contains(term4)
+                        && doc.contains(term5),
+                    index.getAnd(term1, term2, term3, term4, term5)
+                );
 //                test(
 //                    documents,
 //                    doc -> doc.contains(term1)

@@ -6,6 +6,7 @@ public class PostingListIterator {
 
     private final int[] docIds;
     private final int size;
+    private int docId = -1;
     private int pos = -1;
 
     public PostingListIterator(int[] docIds, int size) {
@@ -13,14 +14,20 @@ public class PostingListIterator {
         this.size = size;
     }
 
+    /// @return номер текущего документа.
+    public int docId() {
+        return docId;
+    }
+
     /// Переместить итератор на следующий документ.
     ///
     /// @return номер следующего документа или `Integer.MAX_VALUE`,
     /// если документов больше нет.
     public int next() {
-        return pos < size
+        docId = (pos < size
             ? docIds[++pos]
-            : Integer.MAX_VALUE;
+            : Integer.MAX_VALUE);
+        return docId;
     }
 
     /// Переместить итератор на ближайший справа к данному документу.
@@ -33,6 +40,7 @@ public class PostingListIterator {
         while (pos < size && docIds[pos] < targetDocId) {
             pos += 1;
         }
-        return pos < size ? docIds[pos] : Integer.MAX_VALUE;
+        docId = pos < size ? docIds[pos] : Integer.MAX_VALUE;
+        return docId;
     }
 }
