@@ -121,16 +121,19 @@ public class InvertedIndexImpl implements InvertedIndex {
         Arrays.sort(andPostingLists, Comparator.comparingInt(PostingList::size));
 
         PostingListIterator[] iterators = new PostingListIterator[andPostingLists.length];
+        int maxDocId = -1;
         for (int i = 0; i < andPostingLists.length; i++) {
             iterators[i] = andPostingLists[i].iterator();
-            iterators[i].next();
+            int docId = iterators[i].next();
+            if (maxDocId < docId) {
+                maxDocId = docId;
+            }
         }
         PostingList result = new PostingList();
 
         while (true) {
             PostingListIterator outsider = null;
             int minDocId = Integer.MAX_VALUE;
-            int maxDocId = -1;
             for (PostingListIterator iterator : iterators) {
                 int docId = iterator.docId();
                 if (docId == Integer.MAX_VALUE) {
@@ -140,16 +143,13 @@ public class InvertedIndexImpl implements InvertedIndex {
                     outsider = iterator;
                     minDocId = docId;
                 }
-                if (maxDocId < docId) {
-                    maxDocId = docId;
-                }
             }
 
             if (minDocId < maxDocId) {
-                outsider.advance(maxDocId);
+                maxDocId = Math.max(maxDocId, outsider.advance(maxDocId));
             } else {
                 result.add(minDocId);
-                iterators[0].next();
+                maxDocId = Math.max(maxDocId, iterators[0].next());
             }
         }
     }

@@ -24,9 +24,7 @@ public class PostingListIterator {
     /// @return номер следующего документа или `Integer.MAX_VALUE`,
     /// если документов больше нет.
     public int next() {
-        docId = (pos < size
-            ? docIds[++pos]
-            : Integer.MAX_VALUE);
+        docId = (pos + 1 < size ? docIds[++pos] : Integer.MAX_VALUE);
         return docId;
     }
 
@@ -37,6 +35,9 @@ public class PostingListIterator {
     /// или `Integer.MAX_VALUE` если номера всех документов в данном постинг листе меньше, чем `targetDocId`
     public int advance(int targetDocId) {
         // TODO переделать на бинпоиск.
+        if (pos == -1) {
+            pos = 0;
+        }
         while (pos < size && docIds[pos] < targetDocId) {
             pos += 1;
         }
