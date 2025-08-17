@@ -1,9 +1,11 @@
 package org.yumsh.invindex;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.yumsh.collections.ArrayYQueue;
 
 public class InvertedIndexImpl implements InvertedIndex {
     private final Map<String, PostingList> postingLists = new HashMap<>();
@@ -145,12 +147,90 @@ public class InvertedIndexImpl implements InvertedIndex {
 
     @Override
     public PostingList getOr(String... terms) {
-        return new PostingList();
+        if (terms.length == 0) {
+            return new PostingList();
+        }
+        Set<PostingList> orPostingListSet = new HashSet<>();
+        for (String term : terms) {
+            PostingList postingList = postingLists.get(term);
+            if (postingList != null) {
+                orPostingListSet.add(postingList);
+            }
+        }
+        if (orPostingListSet.size() == 1) {
+            return orPostingListSet.iterator().next().copy();
+        }
+        PostingListIterator[] iterators = new PostingListIterator[orPostingListSet.size()];
+        int i = 0;
+        for (PostingList postingList : orPostingListSet) {
+            iterators[i] = postingList.iterator();
+            iterators[i].next();
+            i += 1;
+        }
+        PostingListPriorityQueue queue = new PostingListPriorityQueue(iterators);
+        PostingList result = new PostingList();
+
+        while (true) {
+            PostingListIterator outsider = queue.least();
+            int minDocId = outsider.docId();
+            if (minDocId == Integer.MAX_VALUE) {
+                return result;
+            }
+            result.add(minDocId);
+            outsider.next();
+            queue.replaceLeast(outsider);
+        }
     }
 
     @Override
     public PostingList getRelaxedAnd(int minShouldMatch, String... terms) {
-        return new PostingList();
+        if (terms.length == 0) {
+            return new PostingList();
+        }
+        terms = Arrays.stream(terms).filter(postingLists::containsKey).distinct().toArray(String[]::new);
+        if (terms.length < minShouldMatch) {
+            return new PostingList();
+        }
+        if (terms.length == minShouldMatch) {
+            return getAnd(terms);
+        }
+        ArrayYQueue prefix = new ArrayYQueue();
+        int i = 0;
+        while (i < minShouldMatch - 1) {
+            prefix.add(postingLists.get(terms[i++]).iterator());
+        }
+        PostingListIterator[] heapIterators = new PostingListIterator[terms.length - (minShouldMatch - 1)];
+        for (int j = 0; i < terms.length; j++, i++) {
+            heapIterators[j] = postingLists.get(terms[i]).iterator();
+        }
+        PostingListPriorityQueue heap = new PostingListPriorityQueue(heapIterators);
+        PostingList result = new PostingList();
+
+        while (true) {
+            PostingListIterator heapLeast = heap.least();
+            int heapDocId = heapLeast.docId();
+            if (heapDocId == Integer.MAX_VALUE) {
+                return result;
+            }
+            PostingListIterator outsider = (PostingListIterator) prefix.remove();
+            int outsiderDocId = outsider.docId();
+
+            int nextDocId;
+            if (outsiderDocId == heapDocId) {
+                if (-1 < outsiderDocId) {
+                    result.add(outsiderDocId);
+                }
+                nextDocId = outsider.next();
+            } else {
+                nextDocId = outsider.advance(heapDocId);
+            }
+            if (nextDocId == heapDocId) {
+                prefix.add(outsider);
+            } else {
+                prefix.add(heapLeast);
+                heap.replaceLeast(outsider);
+            }
+        }
     }
 
     private static PostingList copy(PostingList postingList) {
