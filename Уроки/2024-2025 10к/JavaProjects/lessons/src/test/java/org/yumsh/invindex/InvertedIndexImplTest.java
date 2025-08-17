@@ -2,6 +2,7 @@ package org.yumsh.invindex;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -36,27 +37,29 @@ public class InvertedIndexImplTest {
                         && doc.contains(term5),
                     index.getAnd(term1, term2, term3, term4, term5)
                 );
-//                test(
-//                    documents,
-//                    doc -> doc.contains(term1)
-//                        || doc.contains(term2)
-//                        || doc.contains(term3)
-//                        || doc.contains(term4)
-//                        || doc.contains(term5),
-//                    index.getOr(term1, term2, term3, term4, term5)
-//                );
-//                test(
-//                    documents,
-//                    doc -> {
-//                        int count = (doc.contains(term1) ? 1 : 0)
-//                            + (doc.contains(term2) ? 1 : 0)
-//                            + (doc.contains(term3) ? 1 : 0)
-//                            + (doc.contains(term4) ? 1 : 0)
-//                            + (doc.contains(term5) ? 1 : 0);
-//                        return 3 <= count;
-//                    },
-//                    index.getRelaxedAnd(3, term1, term2, term3, term4, term5)
-//                );
+                test(
+                    documents,
+                    doc -> doc.contains(term1)
+                        || doc.contains(term2)
+                        || doc.contains(term3)
+                        || doc.contains(term4)
+                        || doc.contains(term5),
+                    index.getOr(term1, term2, term3, term4, term5)
+                );
+                Set<String> terms = Set.copyOf(List.of(term1, term2, term3, term4, term5));
+                test(
+                    documents,
+                    doc -> {
+                        int count = 0;
+                        for (String term : terms) {
+                            if (doc.contains(term)) {
+                                count += 1;
+                            }
+                        }
+                        return 3 <= count;
+                    },
+                    index.getRelaxedAnd(3, term1, term2, term3, term4, term5)
+                );
             }
         }
     }
