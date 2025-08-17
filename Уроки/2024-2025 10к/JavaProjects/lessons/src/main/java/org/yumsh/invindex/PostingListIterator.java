@@ -39,14 +39,43 @@ public class PostingListIterator {
     /// @return номер документа `docId >= targetDocId`, на который установился итератор,
     /// или `Integer.MAX_VALUE` если номера всех документов в данном постинг листе меньше, чем `targetDocId`
     public int advance(int targetDocId) {
-        // TODO переделать на бинпоиск.
         if (pos == -1) {
             pos = 0;
+            if (pos == size) {
+                return docId = Integer.MAX_VALUE;
+            }
+            docId = docIds[0];
         }
-        while (pos < size && docIds[pos] < targetDocId) {
-            pos += 1;
+        if (targetDocId <= docId) {
+            return docId;
         }
-        docId = pos < size ? docIds[pos] : Integer.MAX_VALUE;
-        return docId;
+
+        int step = 16;
+        int s = pos; // начало интервала поиска (включительно)
+        int e = pos + step; // конец интервала поиска (включительно)
+        while (e < size && docIds[e] < targetDocId) {
+            step *= 2;
+            s = e;
+            e = s + step;
+        }
+        if (size <= e) {
+            e = size - 1;
+            if (docIds[e] < targetDocId) {
+                pos = size;
+                return docId = Integer.MAX_VALUE;
+            }
+        }
+
+        // Инвариант: docIds[s] < targetDocId <= docIds[e]
+        while (s + 1 < e) {
+            int m = (s + e) >> 1;
+            if (docIds[m] < targetDocId) {
+                s = m;
+            } else {
+                e = m;
+            }
+        }
+        pos = e;
+        return docId = docIds[e];
     }
 }
