@@ -1,7 +1,5 @@
 package org.yumsh.invindex;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -118,8 +116,6 @@ public class InvertedIndexImpl implements InvertedIndex {
             return andPostingListSet.iterator().next().copy();
         }
         PostingList[] andPostingLists = andPostingListSet.toArray(PostingList[]::new);
-        Arrays.sort(andPostingLists, Comparator.comparingInt(PostingList::size));
-
         PostingListIterator[] iterators = new PostingListIterator[andPostingLists.length];
         int maxDocId = -1;
         for (int i = 0; i < andPostingLists.length; i++) {
@@ -138,7 +134,7 @@ public class InvertedIndexImpl implements InvertedIndex {
             if (minDocId < maxDocId) {
                 maxDocId = Math.max(maxDocId, outsider.advance(maxDocId));
             } else {
-                result.add(minDocId);
+                    result.add(minDocId);
                 maxDocId = Math.max(maxDocId, outsider.next());
             }
             queue.replaceLeast(outsider);
