@@ -14,6 +14,11 @@ public class PostingListIterator {
         this.size = size;
     }
 
+    /// @return размер постинг-листа.
+    public int size() {
+        return size;
+    }
+
     /// @return номер текущего документа.
     public int docId() {
         return docId;

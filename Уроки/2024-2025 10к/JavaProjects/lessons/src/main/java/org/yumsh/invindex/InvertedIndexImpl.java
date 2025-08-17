@@ -129,29 +129,21 @@ public class InvertedIndexImpl implements InvertedIndex {
                 maxDocId = docId;
             }
         }
+        PostingListPriorityQueue queue = new PostingListPriorityQueue(iterators);
         PostingList result = new PostingList();
 
-        while (true) {
-            PostingListIterator outsider = null;
-            int minDocId = Integer.MAX_VALUE;
-            for (PostingListIterator iterator : iterators) {
-                int docId = iterator.docId();
-                if (docId == Integer.MAX_VALUE) {
-                    return result;
-                }
-                if (docId < minDocId) {
-                    outsider = iterator;
-                    minDocId = docId;
-                }
-            }
-
+        while (maxDocId < Integer.MAX_VALUE) {
+            PostingListIterator outsider = queue.least();
+            int minDocId = outsider.docId();
             if (minDocId < maxDocId) {
                 maxDocId = Math.max(maxDocId, outsider.advance(maxDocId));
             } else {
                 result.add(minDocId);
-                maxDocId = Math.max(maxDocId, iterators[0].next());
+                maxDocId = Math.max(maxDocId, outsider.next());
             }
+            queue.replaceLeast(outsider);
         }
+        return result;
     }
 
     @Override
