@@ -43,10 +43,10 @@ public class PrefixTreeTest {
                 String value = "v" + k + '.' + i;
                 tree.put(key, value);
                 Assertions.assertEquals(value, tree.get(key));
-                Assertions.assertEquals(i, tree.size());
+                Assertions.assertEquals(i + 1, tree.size());
                 tree.put(key, value);
                 Assertions.assertEquals(value, tree.get(key));
-                Assertions.assertEquals(i, tree.size());
+                Assertions.assertEquals(i + 1, tree.size());
 
                 Assertions.assertNull(tree.get("v" + k + '.' + (i + 1)));
             }
