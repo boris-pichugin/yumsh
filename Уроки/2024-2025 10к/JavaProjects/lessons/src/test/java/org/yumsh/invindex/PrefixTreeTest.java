@@ -8,7 +8,7 @@ public class PrefixTreeTest {
     private static PrefixTree createTree() {
 //        return new DirectArrayYMap();
 //        return new ArrayYMap();
-        return new PrefixTreeImpl();
+        return new SimplePrefixTree();
     }
 
     @Test
