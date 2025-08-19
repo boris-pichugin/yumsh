@@ -49,4 +49,11 @@ public class SimplePrefixTree implements PrefixTree {
         private final Node[] children = new Node[256];
         private Object value = null;
     }
+
+
+    public static void main(String[] args) {
+        byte[] bytes = {'a', 'b', 'c'};
+        String str = new String(bytes, 0, 2,  StandardCharsets.UTF_8);
+        System.out.println(str);
+    }
 }

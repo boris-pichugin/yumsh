@@ -4,11 +4,12 @@ import java.nio.charset.StandardCharsets;
 
 public class StringLexEnumeratorImpl implements StringLexEnumerator {
     private final Node root = new Node();
+    private int count = 0;
     private int maxBytesLen = 0;
 
     @Override
     public int size() {
-        return root.size;
+        return count;
     }
 
     @Override
@@ -28,7 +29,7 @@ public class StringLexEnumeratorImpl implements StringLexEnumerator {
                 idx += 1;
             }
             for (int i = 0; i < bi; i++) {
-                idx += node.children[i] == null ? 0 : node.children[i].size;
+                idx += node.count[i];
             }
             Node child = node.children[bi];
             node = child == null ? (node.children[bi] = new Node()) : child;
@@ -36,11 +37,11 @@ public class StringLexEnumeratorImpl implements StringLexEnumerator {
         if (!node.isEoS) {
             node.isEoS = true;
             node = root;
-            node.size += 1;
+            count += 1;
             for (byte b : bytes) {
                 int bi = b & 0xFF;
+                node.count[bi] += 1;
                 node = node.children[bi];
-                node.size += 1;
             }
         }
         return idx;
@@ -60,7 +61,7 @@ public class StringLexEnumeratorImpl implements StringLexEnumerator {
                 idx += 1;
             }
             for (int i = 0; i < bi; i++) {
-                idx += node.children[i] == null ? 0 : node.children[i].size;
+                idx += node.count[i];
             }
             node = node.children[bi];
             if (node == null) {
@@ -87,14 +88,10 @@ public class StringLexEnumeratorImpl implements StringLexEnumerator {
                 i -= 1;
             }
             for (int b = 0; b < 256; b++) {
-                Node child = node.children[b];
-                if (child == null) {
-                    continue;
-                }
-                if (child.size <= i) {
-                    i -= child.size;
+                if (node.count[b] <= i) {
+                    i -= node.count[b];
                 } else {
-                    node = child;
+                    node = node.children[b];
                     bytes[pos++] = (byte) b;
                     break;
                 }
@@ -103,8 +100,8 @@ public class StringLexEnumeratorImpl implements StringLexEnumerator {
     }
 
     private static final class Node {
-        private int size = 0;
         private boolean isEoS = false;
         private final Node[] children = new Node[256];
+        private final int[] count = new int[256];
     }
 }
