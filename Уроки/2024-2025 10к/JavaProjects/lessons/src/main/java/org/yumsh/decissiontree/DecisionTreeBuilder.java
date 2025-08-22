@@ -3,8 +3,14 @@ package org.yumsh.decissiontree;
 import java.util.Arrays;
 
 public class DecisionTreeBuilder implements RegressionBuilder {
+    private final int maxDepth;
+
     private double[][] samples = new double[16][0];
     private int size = 0;
+
+    public DecisionTreeBuilder(int maxDepth) {
+        this.maxDepth = maxDepth;
+    }
 
     @Override
     public void add(double[] x, double y) {
