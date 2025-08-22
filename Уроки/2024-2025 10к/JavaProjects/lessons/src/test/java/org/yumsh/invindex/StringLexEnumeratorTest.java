@@ -14,7 +14,7 @@ public class StringLexEnumeratorTest {
     private static StringLexEnumerator createEnumerator() {
 //        return new DirectArrayYMap();
 //        return new ArrayYMap();
-        return new StringLexEnumeratorImpl();
+        return new FstStringLexEnumerator();
     }
 
     @Test
@@ -51,7 +51,8 @@ public class StringLexEnumeratorTest {
                 stringsSet.add(generateString(rnd));
             }
             List<String> strings = new ArrayList<>(stringsSet);
-            Collections.shuffle(strings, rnd);
+            strings.sort(null);
+//            Collections.shuffle(strings, rnd);
             for (int i = 0; i < strings.size(); i++) {
                 String str = strings.get(i);
                 int idx = enumerator.put(str);
