@@ -1,6 +1,7 @@
 package org.yumsh.decissiontree;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class DecisionTreeBuilder implements RegressionBuilder {
     private final int maxDepth;
@@ -29,6 +30,8 @@ public class DecisionTreeBuilder implements RegressionBuilder {
     }
 
     private Node buildNode(double[][] samples, int from, int to) {
+
+        Arrays.sort(samples, from, to, Comparator.comparingDouble(x -> x[0]));
         return null;
     }
 
