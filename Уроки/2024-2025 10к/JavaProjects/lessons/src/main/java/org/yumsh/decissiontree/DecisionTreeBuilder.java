@@ -1,18 +1,28 @@
 package org.yumsh.decissiontree;
 
+import java.util.Arrays;
+
 public class DecisionTreeBuilder implements RegressionBuilder {
+    private double[][] samples = new double[16][0];
+    private int size = 0;
+
     @Override
     public void add(double[] x, double y) {
-
+        if (size == samples.length) {
+            samples = Arrays.copyOf(samples, size * 2);
+        }
+        double[] sample = Arrays.copyOf(x, x.length + 1);
+        sample[x.length] = y;
+        samples[size++] = sample;
     }
 
     @Override
     public Regression build() {
-        Node root = buildNode();
+        Node root = buildNode(samples, 0, size);
         return root::compute;
     }
 
-    private Node buildNode() {
+    private Node buildNode(double[][] samples, int from, int to) {
         return null;
     }
 
