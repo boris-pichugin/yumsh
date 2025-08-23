@@ -10,12 +10,23 @@ public class RegressionBuilderTest {
     private static final int TEST_SIZE = 1000000;
 
     private static RegressionBuilder createRegressionBuilder() {
-        return new DecisionTreeBuilder(5, 10);
+
+//        return new DecisionTreeBuilder(5, 10); // 80.05634337658259
+//        return new DecisionTreeBuilder(5, 50); // 80.05634337658259
+//        return new DecisionTreeBuilder(100, 100); // 95.76787501759077
+//        return new DecisionTreeBuilder(100, 10); // 96.99879490230437
+
+
+//        return new DecisionTreeBuilder(100, 10); // 91.27741855900054
+//        return new DecisionTreeBuilder(100, 1); // 86.95185866215799
+//        return new DecisionTreeBuilder(100, 100); // 91.37677184504722
+//        return new DecisionTreeBuilder(1000, 100); // 91.37677184504722
+        return new DecisionTreeBuilder(1000, 10, 1.0); // 91.37677184504722
     }
 
     @Test
     public void test() {
-        Random rnd = new Random();
+        Random rnd = new Random(42);
         RegressionBuilder regressionBuilder = createRegressionBuilder();
         for (int i = 0; i < TRAIN_SIZE; i++) {
             double[] x = generateX(rnd);
@@ -57,6 +68,6 @@ public class RegressionBuilderTest {
         for (int i = 0; i < D; i++) {
             y = Math.sin(y + x[i]) + Math.cos(y - x[i]);
         }
-        return y;
+        return y + 0.2 * rnd.nextGaussian();
     }
 }

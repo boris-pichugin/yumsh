@@ -6,13 +6,18 @@ import java.util.Comparator;
 public class DecisionTreeBuilder implements RegressionBuilder {
     private final int maxDepth;
     private final int minSamplesInNode;
+    private final double subsamplePart;
 
     private double[][] samples = new double[16][0];
     private int size = 0;
 
-    public DecisionTreeBuilder(int maxDepth, int minSamplesInNode) {
+    /// @param maxDepth         максимальная глубина дерева.
+    /// @param minSamplesInNode минимальное число обучающих образов в листе дерева.
+    /// @param subsamplePart    доля обучающих образов, которые будут использованы для построения дерева: `subsamplePart in [0;1]`.
+    public DecisionTreeBuilder(int maxDepth, int minSamplesInNode, double subsamplePart) {
         this.maxDepth = maxDepth;
         this.minSamplesInNode = minSamplesInNode;
+        this.subsamplePart = subsamplePart;
     }
 
     @Override
