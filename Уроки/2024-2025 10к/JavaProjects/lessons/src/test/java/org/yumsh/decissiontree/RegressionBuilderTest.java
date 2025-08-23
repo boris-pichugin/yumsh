@@ -10,7 +10,7 @@ public class RegressionBuilderTest {
     private static final int TEST_SIZE = 1000000;
 
     private static RegressionBuilder createRegressionBuilder() {
-        return new DecisionTreeBuilder(5);
+        return new DecisionTreeBuilder(5, 10);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class RegressionBuilderTest {
     }
 
     private static double computeY(double[] x, Random rnd) {
-        double y = rnd.nextGaussian();
+        double y = 0.2 * rnd.nextGaussian();
         for (int i = 0; i < D; i++) {
             y = Math.sin(y + x[i]) + Math.cos(y - x[i]);
         }
