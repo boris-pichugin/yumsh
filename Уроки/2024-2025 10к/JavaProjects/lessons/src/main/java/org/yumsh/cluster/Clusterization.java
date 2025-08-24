@@ -2,5 +2,8 @@ package org.yumsh.cluster;
 
 @FunctionalInterface
 public interface Clusterization {
-    void getCluster(double[] x);
+    ClusterizationResult getCluster(double[] x);
+
+    record ClusterizationResult(int clusterId, double distance) {
+    }
 }
