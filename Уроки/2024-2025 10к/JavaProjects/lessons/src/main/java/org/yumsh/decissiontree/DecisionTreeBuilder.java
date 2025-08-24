@@ -33,13 +33,22 @@ public class DecisionTreeBuilder implements RegressionBuilder {
         samples[size++] = sample;
     }
 
+    public void replaceY(YTransformer transformer) {
+        int yIdx = samples[0].length - 1;
+        for (int i = 0; i < size; i++) {
+            double[] sample = samples[i];
+            double[] x = Arrays.copyOf(sample, yIdx);
+            sample[yIdx] = transformer.transform(x, sample[yIdx]);
+        }
+    }
+
     @Override
     public Regression build() {
         int trainSize = shuffle();
         double sumY = 0.0;
         double sumY2 = 0.0;
         int yIdx = samples[0].length - 1;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < trainSize; i++) {
             double y = samples[i][yIdx];
             sumY += y;
             sumY2 += y * y;
@@ -156,5 +165,10 @@ public class DecisionTreeBuilder implements RegressionBuilder {
                 return right.compute(x);
             }
         }
+    }
+
+    @FunctionalInterface
+    public interface YTransformer {
+        double transform(double[] x, double y);
     }
 }

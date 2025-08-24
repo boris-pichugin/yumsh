@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 
 public class RegressionBuilderTest {
     private static final int D = 5;
-    private static final int TRAIN_SIZE = 1000000;
-    private static final int TEST_SIZE = 1000000;
+    private static final int TRAIN_SIZE = 100000;
+    private static final int TEST_SIZE = 100000;
 
     private static RegressionBuilder createRegressionBuilder() {
 // max R2 = 94.48063676281174
@@ -23,7 +23,20 @@ public class RegressionBuilderTest {
 //        return new DecisionTreeBuilder(1000, 100); // 91.37677184504722
 //        return new DecisionTreeBuilder(1000, 10, 1.0, new Random(11)); // 91.37677184504722
 //        return new DecisionTreeBuilder(6, 100, 1.0, new Random(11)); // 79.03616245549581
-        return new RandomForestBuilder(6, 100, 0.5, new Random(11), 20); // 79.03616245549581
+//        return new RandomForestBuilder(6, 100, 1.0, new Random(11), 1); // 78.44927792888687
+//        return new RandomForestBuilder(6, 100, 0.5, new Random(11), 2); // 78.62600074108684
+//        return new RandomForestBuilder(6, 100, 0.5, new Random(11), 20); // 79.04296694189635
+//        return new RandomForestBuilder(6, 100, 0.5, new Random(11), 200); // 79.11815581611495
+
+//        return new BoostedForestBuilder(6, 100, 1); // 78.44927792888687
+//        return new BoostedForestBuilder(6, 100, 2); // 83.1151517295535
+//        return new BoostedForestBuilder(6, 100, 20); // 87.60404310748719
+//        return new BoostedForestBuilder(6, 100, 200); // 88.62106650544396
+//        return new BoostedForestBuilder(5, 100, 200); // 88.56490006720375
+//        return new BoostedForestBuilder(7, 100, 200); // 88.92501695234472
+        return new BoostedForestBuilder(7, 30, 200); // 88.1168547434391
+//        return new BoostedForestBuilder(15, 100, 200); // 87.66086435209452
+
 //        return new RegressionBuilder() {
 //            final Random rnd = new Random(11);
 //
