@@ -10,7 +10,7 @@ public class RegressionBuilderTest {
     private static final int TEST_SIZE = 1000000;
 
     private static RegressionBuilder createRegressionBuilder() {
-
+// max R2 = 94.48063676281174
 //        return new DecisionTreeBuilder(5, 10); // 80.05634337658259
 //        return new DecisionTreeBuilder(5, 50); // 80.05634337658259
 //        return new DecisionTreeBuilder(100, 100); // 95.76787501759077
@@ -21,7 +21,21 @@ public class RegressionBuilderTest {
 //        return new DecisionTreeBuilder(100, 1); // 86.95185866215799
 //        return new DecisionTreeBuilder(100, 100); // 91.37677184504722
 //        return new DecisionTreeBuilder(1000, 100); // 91.37677184504722
-        return new DecisionTreeBuilder(1000, 10, 1.0); // 91.37677184504722
+//        return new DecisionTreeBuilder(1000, 10, 1.0, new Random(11)); // 91.37677184504722
+//        return new DecisionTreeBuilder(6, 100, 1.0, new Random(11)); // 79.03616245549581
+        return new RandomForestBuilder(6, 100, 0.5, new Random(11), 20); // 79.03616245549581
+//        return new RegressionBuilder() {
+//            final Random rnd = new Random(11);
+//
+//            @Override
+//            public void add(double[] x, double y) {
+//            }
+//
+//            @Override
+//            public Regression build() {
+//                return x -> computeEY(x, rnd);
+//            }
+//        };
     }
 
     @Test
@@ -69,5 +83,13 @@ public class RegressionBuilderTest {
             y = Math.sin(y + x[i]) + Math.cos(y - x[i]);
         }
         return y + 0.2 * rnd.nextGaussian();
+    }
+
+    private static double computeEY(double[] x, Random rnd) {
+        double y = 0.0;
+        for (int i = 0; i < 1000; i++) {
+            y += computeY(x, rnd);
+        }
+        return y / 1000.0;
     }
 }

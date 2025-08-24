@@ -2,11 +2,13 @@ package org.yumsh.decissiontree;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Random;
 
 public class DecisionTreeBuilder implements RegressionBuilder {
     private final int maxDepth;
     private final int minSamplesInNode;
     private final double subsamplePart;
+    private final Random rnd;
 
     private double[][] samples = new double[16][0];
     private int size = 0;
@@ -14,10 +16,11 @@ public class DecisionTreeBuilder implements RegressionBuilder {
     /// @param maxDepth         максимальная глубина дерева.
     /// @param minSamplesInNode минимальное число обучающих образов в листе дерева.
     /// @param subsamplePart    доля обучающих образов, которые будут использованы для построения дерева: `subsamplePart in [0;1]`.
-    public DecisionTreeBuilder(int maxDepth, int minSamplesInNode, double subsamplePart) {
+    public DecisionTreeBuilder(int maxDepth, int minSamplesInNode, double subsamplePart, Random rnd) {
         this.maxDepth = maxDepth;
         this.minSamplesInNode = minSamplesInNode;
         this.subsamplePart = subsamplePart;
+        this.rnd = rnd;
     }
 
     @Override
@@ -32,6 +35,7 @@ public class DecisionTreeBuilder implements RegressionBuilder {
 
     @Override
     public Regression build() {
+        int trainSize = shuffle();
         double sumY = 0.0;
         double sumY2 = 0.0;
         int yIdx = samples[0].length - 1;
@@ -40,8 +44,24 @@ public class DecisionTreeBuilder implements RegressionBuilder {
             sumY += y;
             sumY2 += y * y;
         }
-        Node root = buildNode(0, size, maxDepth, sumY, sumY2);
+        Node root = buildNode(0, trainSize, maxDepth, sumY, sumY2);
         return root::compute;
+    }
+
+    private int shuffle() {
+        if (1.0 <= subsamplePart) {
+            return size;
+        }
+        int trainSize = (int) (size * subsamplePart);
+        for (int i = 0; i < trainSize; i++) {
+            int j = rnd.nextInt(i, size); // [i; size)
+            if (i != j) {
+                double[] tmp = samples[i];
+                samples[i] = samples[j];
+                samples[j] = tmp;
+            }
+        }
+        return trainSize;
     }
 
     private Node buildNode(int from, int to, int maxDepth, double sumY, double sumY2) {
