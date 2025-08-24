@@ -52,8 +52,15 @@ public class ClusterizationBuilderTest {
         }
         sumDistance0 /= testPoints;
         sumDistance1 /= testPoints;
+
         System.out.println("Original distance: " + sumDistance0);
         System.out.println("Cluster distance: " + sumDistance1);
+        double cDistance = 0.0;
+        for (int i = 0; i < numClusters; i++) {
+            cDistance += clusterization.getCluster(c[i]).distance();
+        }
+        cDistance /= numClusters;
+        System.out.println("Centroids distance: " + cDistance);
     }
 
     private static double distance(double[] x, double[] y) {
