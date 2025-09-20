@@ -2,6 +2,7 @@ alph = sorted([c for c in "СТРОКА"])
 
 number = 1
 idx = 0
+word = ""
 for a in alph:
     for b in alph:
         for c in alph:
@@ -11,5 +12,7 @@ for a in alph:
                             and not (a in {"А", "С", "Т"}) \
                             and ((a == "О") + (b == "О") + (c == "О") + (d == "О") + (e == "О")) == 2:
                         idx = number
+                        word = "".join([a, b, c, d, e])
                     number += 1
 print(idx)
+print(word)
