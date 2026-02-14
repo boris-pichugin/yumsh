@@ -12,6 +12,23 @@ def multiply(m_a: list, x: list) -> list:
     return y
 
 
+def multiply_matrix(a: list, b: list) -> list:
+    n = len(a)
+    m = len(b)
+    k = len(b[0])
+    return [[sum(a[i][k] * b[k][j] for k in range(m)) for j in range(k)] for i in range(n)]
+
+
+def transpose(m_a: list) -> list:
+    n = len(m_a)
+    return [[m_a[j][i] for j in range(n)] for i in range(n)]
+
+
+def scalar(u: list, v: list) -> float:
+    n = len(u)
+    return sum(u[i] * v[i] for i in range(n))
+
+
 def generate_vector(n: int) -> list:
     return [random.uniform(-10, 10) for _ in range(n)]
 
