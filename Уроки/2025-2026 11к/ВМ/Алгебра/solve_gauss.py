@@ -10,10 +10,11 @@ def solve_gauss(m_a: list, b: list) -> list:
         max_a = abs(m_a[i][i])
         for k in range(i, n):
             for j in range(i, n):
-                if max_a < abs(m_a[k][j]):
+                a_kj = abs(m_a[k][j])
+                if max_a < a_kj:
                     max_k = k
                     max_j = j
-                    max_a = abs(m_a[i][j])
+                    max_a = a_kj
 
         if max_a == 0:
             return None

@@ -18,3 +18,7 @@ def generate_vector(n: int) -> list:
 
 def generate_matrix(n: int) -> list:
     return [generate_vector(n) for _ in range(n)]
+
+
+def copy_matrix(m_a: list) -> list:
+    return [l.copy() for l in m_a]
