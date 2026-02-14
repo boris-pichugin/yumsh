@@ -27,6 +27,14 @@ def generate_vector(n: int) -> list:
     return [random.uniform(-10, 10) for _ in range(n)]
 
 
+def zero_matrix(n: int) -> list:
+    return [[0] * n for _ in range(n)]
+
+
+def zero_vector(n: int) -> list:
+    return [0] * n
+
+
 def generate_matrix(n: int) -> list:
     return [generate_vector(n) for _ in range(n)]
 
