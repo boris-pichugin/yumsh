@@ -3,13 +3,7 @@ import random
 
 def multiply(m_a: list, x: list) -> list:
     n = len(x)
-    y = [0] * n
-    for i in range(n):
-        s = 0
-        for j in range(n):
-            s += m_a[i][j] * x[j]
-        y[i] = s
-    return y
+    return [sum(m_a[i][j] * x[j] for j in range(n)) for i in range(n)]
 
 
 def multiply_matrix(a: list, b: list) -> list:
