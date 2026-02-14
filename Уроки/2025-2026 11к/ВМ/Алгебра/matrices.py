@@ -6,6 +6,11 @@ def multiply(m_a: list, x: list) -> list:
     return [sum(m_a[i][j] * x[j] for j in range(n)) for i in range(n)]
 
 
+def multiply_t(m_a: list, x: list) -> list:
+    n = len(x)
+    return [sum(m_a[j][i] * x[j] for j in range(n)) for i in range(n)]
+
+
 def multiply_matrix(a: list, b: list) -> list:
     n = len(a)
     m = len(b)

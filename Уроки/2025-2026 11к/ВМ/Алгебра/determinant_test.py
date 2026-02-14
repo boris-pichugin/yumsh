@@ -10,11 +10,11 @@ if __name__ == '__main__':
         for i in range(n):
             for j in range(i + 1, n):
                 m_a[i][j] = 0
-        d2 = 1
+        expected_d = 1
         for i in range(n):
-            d2 *= m_a[i][i]
+            expected_d *= m_a[i][i]
 
-        d1 = determinant(m_a)
+        actual_d = determinant(m_a)
 
-        if abs(d2 - d1) > 1e-8:
-            print(f"ERROR: {abs(d2 - d1)}")
+        if abs(expected_d - actual_d) > 1e-8:
+            print(f"ERROR: {abs(expected_d - actual_d)}")
