@@ -45,28 +45,3 @@ def do_step_1(a: int, b: int, cur_step: int) -> bool:
 for s in range(1, 72):
     if do_step_1_or_2(14, s, 1) and not do_step_1(14, s, 1):
         print(s)
-
-0
-0
-0
-2;
-3
-1;
-4
-0
-2;
-4
-5
-0
-4;
-7
-3;
-8
-2;
-9
-4;
-6
-3;
-9
-1;
-7
